@@ -107,6 +107,17 @@ class Utility(commands.Cog):
         await ctx.send(self.bot.bot_prefix + msg)
 
     @commands.command(pass_context=True)
+    async def search(self, ctx, search):
+        """Search for a bot command by name."""
+        matches = {command.name.replace(search, "**%s**" % search) for command in self.bot.commands if search in command.name}
+        
+        if matches:
+            em = discord.Embed(title="Command search results", description="\n".join(matches))
+            await ctx.send(embed=em)
+        else:
+            await ctx.send("No commands were found that match `%s`." % search)
+
+    @commands.command(pass_context=True)
     async def code(self, ctx, *, msg):
         """Write text in code format."""
         await ctx.message.delete()
