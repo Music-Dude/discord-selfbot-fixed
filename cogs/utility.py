@@ -541,7 +541,7 @@ class Utility(commands.Cog):
         """
         try:
             with open("anims/{}.txt".format(animation), encoding="utf-8") as f:
-                anim = f.read().split("\n")
+                anim = f.read().split("\n").replace("\\n", "\n")
         except IOError:
             return await ctx.send(self.bot.bot_prefix + "You don't have that animation in your `anims` folder!")
         if anim:
