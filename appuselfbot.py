@@ -237,6 +237,7 @@ async def on_ready():
     bot.session = aiohttp.ClientSession(loop=bot.loop, headers={"User-Agent": "AppuSelfBot"})
 
     bot.uptime = datetime.datetime.now()
+    bot.last_error = "No errors to display."
     bot.icount = bot.message_count = bot.mention_count = bot.keyword_log = 0
     bot.self_log = bot.all_log = {}
     bot.imagedumps = []
@@ -390,13 +391,14 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.errors.BadArgument):
         await ctx.send(bot.bot_prefix + "You have given an invalid argument.")
     else:
+        trace = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        bot.last_error = trace
         if _silent:
             await ctx.send(bot.bot_prefix + "An error occurred with the `{}` command.".format(ctx.command.name))
         else:
             await ctx.send(bot.bot_prefix + "An error occurred with the `{}` command. Check the console for details.".format(ctx.command.name))
             print("Ignoring exception in command {}".format(ctx.command.name))
-            trace = traceback.format_exception(type(error), error, error.__traceback__)
-            print("".join(trace))
+            print(trace)
 
 
 @bot.command(pass_context=True)
@@ -474,6 +476,10 @@ async def update(ctx, msg: str = None):
     else:
         await ctx.send(bot.bot_prefix + 'The bot is up to date.')
 
+@bot.command(pass_context=True, aliases=['traceback', 'err'])
+async def error(ctx):
+    """Show details of the bot's most recent error."""
+    await ctx.send("Most recent exception:\n```\n%s```" % bot.last_error)
 
 @bot.command(pass_context=True, aliases=['stop', 'shutdown'])
 async def quit(ctx):
