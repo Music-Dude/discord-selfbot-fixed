@@ -16,13 +16,6 @@ class EmbedShell(commands.Cog):
         self.repl_sessions = {}
         self.repl_embeds = {}
 
-    def cleanup_code(self, content):
-        """Automatically removes code blocks from the code."""
-        if content.startswith('```') and content.endswith('```'):
-            return '\n'.join(content.split('\n')[1:-1])
-
-        return content.strip('` \n')
-
     def get_syntax_error(self, err):
         """Returns SyntaxError formatted for repl reply."""
         return '```py\n{0.text}{1:>{0.offset}}\n{2}: {0}```'.format(
@@ -86,9 +79,9 @@ class EmbedShell(commands.Cog):
 
         while True:
             response = await self.bot.wait_for('message',
-                check=lambda m: m.content.startswith('`') and m.author == ctx.message.author and m.channel == ctx.message.channel)
+                check=lambda m: m.content.startswith('>') and m.author == ctx.message.author and m.channel == ctx.message.channel)
 
-            cleaned = self.cleanup_code(response.content)
+            cleaned = response.content.strip('> \n')
             shell = self.repl_sessions[session]
 
             # Self Bot Method
