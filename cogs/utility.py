@@ -561,7 +561,7 @@ class Utility(commands.Cog):
         if os.path.exists("anims/%s.txt" % name):
             return await ctx.send(self.bot.bot_prefix + "That animation alrady exists!")
 
-        animation = ' '.join(animation)
+        animation = ''.join(animation)
         with open("anims/%s.txt" % name, 'w', encoding="utf-8") as f:
             f.write(animation)
 
