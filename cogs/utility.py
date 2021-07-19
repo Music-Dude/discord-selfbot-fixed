@@ -538,6 +538,8 @@ class Utility(commands.Cog):
         fam i
         fam i love
         fam i love you
+
+        Use "\\n" to include a frame with multiple lines.
         """
         try:
             with open("anims/{}.txt".format(animation), encoding="utf-8") as f:
@@ -547,13 +549,45 @@ class Utility(commands.Cog):
         if anim:
             try:
                 delay = float(anim[0])
-                for frame in anim[1:]:
-                    await ctx.message.edit(content=frame.replace("\\n", "\n"))
-                    await asyncio.sleep(delay)
             except ValueError:
-                for frame in anim:
-                    await ctx.message.edit(content=frame.replace("\\n", "\n"))
-                    await asyncio.sleep(0.2)
+                delay = 0.2
+            for frame in anim[1:]:
+                await ctx.message.edit(content=frame.replace("\\n", "\n"))
+                await asyncio.sleep(delay)
+
+    @commands.command(pass_context=True)
+    async def addanim(self, ctx, name, *, animation):
+        """Create an animation file."""
+        if os.path.exists("anims/%s.txt" % name):
+            return await ctx.send(self.bot.bot_prefix + "That animation alrady exists!")
+
+        animation = ' '.join(animation)
+        with open("anims/%s.txt" % name, 'w', encoding="utf-8") as f:
+            f.write(animation)
+
+        await ctx.send(self.bot.bot_prefix + "Successfully created animation file `%s`!" % name)
+
+    @commands.command(pass_context=True)
+    async def delanim(self, ctx, name):
+        """Delete an animation file."""
+        if not os.path.exists("anims/%s.txt" % name):
+            return await ctx.send(self.bot.bot_prefix + "That animation doesn't exist!")
+
+        os.remove("anims/%s.txt" % name)
+
+        await ctx.send(self.bot.bot_prefix + "Deleted animation file `%s`!" % name)
+
+    @commands.command(pass_context=True)
+    async def listanims(self, ctx):
+        """List animation files."""
+        msg = "Availible animation files:\n```"
+
+        for file in os.listdir("anims"):
+            if file.endswith(".txt"):
+                msg += file[:-4] + "\n"
+
+        msg += "```"
+        await ctx.send(self.bot.bot_prefix + msg)
 
     @commands.command(pass_context=True)
     async def roles(self, ctx, *, user=None):
