@@ -541,18 +541,18 @@ class Utility(commands.Cog):
         """
         try:
             with open("anims/{}.txt".format(animation), encoding="utf-8") as f:
-                anim = f.read().split("\n").replace("\\n", "\n")
+                anim = f.read().split("\n")
         except IOError:
             return await ctx.send(self.bot.bot_prefix + "You don't have that animation in your `anims` folder!")
         if anim:
             try:
                 delay = float(anim[0])
                 for frame in anim[1:]:
-                    await ctx.message.edit(content=frame)
+                    await ctx.message.edit(content=frame.replace("\\n", "\n"))
                     await asyncio.sleep(delay)
             except ValueError:
                 for frame in anim:
-                    await ctx.message.edit(content=frame)
+                    await ctx.message.edit(content=frame.replace("\\n", "\n"))
                     await asyncio.sleep(0.2)
 
     @commands.command(pass_context=True)
