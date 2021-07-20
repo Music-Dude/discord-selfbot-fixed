@@ -27,18 +27,22 @@ class Lockdown(commands.Cog):
                 mod_role_strings = mod_strings[ctx.message.guild.name]
                 mod_roles = []
                 for m in mod_role_strings:
-                    mod_roles.append(discord.utils.get(ctx.message.guild.roles, name=m))
+                    mod_roles.append(discord.utils.get(
+                        ctx.message.guild.roles, name=m))
             except:
                 mod_roles = []
             server = ctx.message.guild
-            overwrites_everyone = ctx.message.channel.overwrites_for(server.default_role)
-            overwrites_owner = ctx.message.channel.overwrites_for(server.role_hierarchy[0])
+            overwrites_everyone = ctx.message.channel.overwrites_for(
+                server.default_role)
+            overwrites_owner = ctx.message.channel.overwrites_for(
+                server.role_hierarchy[0])
             if ctx.message.channel.id in self.states:
                 await ctx.send("🔒 Channel is already locked down. Use `unlock` to unlock.")
                 return
             states = []
             for a in ctx.message.guild.role_hierarchy:
-                states.append([a, ctx.message.channel.overwrites_for(a).send_messages])
+                states.append(
+                    [a, ctx.message.channel.overwrites_for(a).send_messages])
             self.states[ctx.message.channel.id] = states
             overwrites_owner.send_messages = True
             overwrites_everyone.send_messages = False
@@ -110,8 +114,8 @@ class Lockdown(commands.Cog):
                 with open("settings/moderation.json", "w+") as f:
                     json.dump(mods, f)
                 await ctx.send(
-                               self.bot.bot_prefix + "Successfully added {} to the list of mod roles on {}!".format(
-                                                                                                                    role, server))
+                    self.bot.bot_prefix + "Successfully added {} to the list of mod roles on {}!".format(
+                        role, server))
             else:
                 await ctx.send(self.bot.bot_prefix + "{} isn't a role on {}!".format(role, server))
         else:
@@ -128,11 +132,11 @@ class Lockdown(commands.Cog):
             with open("settings/moderation.json", "w+") as f:
                 json.dump(mods, f)
             await ctx.send(
-                           self.bot.bot_prefix + "Successfully removed {} from the list of mod roles on {}!".format(
-                                                                                                                    role, server))
+                self.bot.bot_prefix + "Successfully removed {} from the list of mod roles on {}!".format(
+                    role, server))
         except (ValueError, KeyError):
             await ctx.send(
-                           self.bot.bot_prefix + "You can't remove something that doesn't exist!")
+                self.bot.bot_prefix + "You can't remove something that doesn't exist!")
 
 
 def setup(bot):

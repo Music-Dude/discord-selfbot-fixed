@@ -85,11 +85,13 @@ class Help(formatter.HelpFormatter, commands.Cog):
     async def send(self, dest, content=None, embeds=None):
         if len(embeds) == 1:
             embed = embeds[0]
-            embed.set_author(name='{0} Help Manual'.format(self.bot.user.name), icon_url=self.avatar)
+            embed.set_author(name='{0} Help Manual'.format(
+                self.bot.user.name), icon_url=self.avatar)
             return await dest.send(content=content, embed=embed)
 
         help_msg = await dest.send(content=content, embed=embeds[0])
         page_msg = await dest.send(self.bot.bot_prefix + "There are {} help pages. Send a number to see the corresponding page. Send any other message to exit.".format(len(embeds)))
+
         def is_me(msg):
             if msg.author == self.context.me and msg.channel == dest:
                 return True
@@ -108,7 +110,6 @@ class Help(formatter.HelpFormatter, commands.Cog):
                 await page_msg.edit(content=self.bot.bot_prefix + "Quit Help menu.")
                 break
 
-
     @property
     def author(self):
         # Get author dict with username if PM and display name in guild
@@ -117,9 +118,9 @@ class Help(formatter.HelpFormatter, commands.Cog):
         else:
             name = self.me.display_name if not '' else self.bot.user.name
         author = {
-                'name': '{0} Help Manual'.format(name),
-                'icon_url': self.avatar
-            }
+            'name': '{0} Help Manual'.format(name),
+            'icon_url': self.avatar
+        }
         return author
 
     @property
@@ -149,7 +150,8 @@ class Help(formatter.HelpFormatter, commands.Cog):
     def get_ending_note(self):
         # command_name = self.context.invoked_with
         return "Type {0}help <command> for more info on a command.\n" \
-               "You can also type {0}help <category> for more info on a category.".format(self.clean_prefix)
+               "You can also type {0}help <category> for more info on a category.".format(
+                   self.clean_prefix)
 
     async def format(self, ctx, command):
         """Formats command for output.
@@ -174,18 +176,21 @@ class Help(formatter.HelpFormatter, commands.Cog):
         if isinstance(command, discord.ext.commands.core.Command):
             # <signature portion>
             # emb['embed']['title'] = emb['embed']['description']
-            emb['embed']['description'] = '`Syntax: {0}`'.format(self.get_command_signature())
+            emb['embed']['description'] = '`Syntax: {0}`'.format(
+                self.get_command_signature())
 
             # <long doc> section
             if command.help:
                 name = '{0}'.format(command.help.split('\n\n')[0])
                 name_length = len(name)
                 name = name.replace('[p]', self.clean_prefix)
-                value = command.help[name_length:].replace('[p]', self.clean_prefix)
+                value = command.help[name_length:].replace(
+                    '[p]', self.clean_prefix)
                 if value == '':
-                     name = '{0}'.format(command.help.split('\n')[0])
-                     name_length = len(name)
-                     value = command.help[name_length:].replace('[p]', self.clean_prefix)
+                    name = '{0}'.format(command.help.split('\n')[0])
+                    name_length = len(name)
+                    value = command.help[name_length:].replace(
+                        '[p]', self.clean_prefix)
                 if value == '':
                     value = empty
                 if len(value) > 1024:
@@ -235,7 +240,8 @@ class Help(formatter.HelpFormatter, commands.Cog):
                             'inline': False
                         }
                         if count > 0:
-                            field['name'] = category + ' pt. {}'.format(count+1)
+                            field['name'] = category + \
+                                ' pt. {}'.format(count+1)
                         else:
                             field['name'] = category
                         field['value'] = subcommands  # May need paginated
@@ -256,7 +262,7 @@ class Help(formatter.HelpFormatter, commands.Cog):
 
         return emb
 
-    async def format_help_for(self, ctx, command_or_bot, reason: str=None):
+    async def format_help_for(self, ctx, command_or_bot, reason: str = None):
         """Formats the help page and handles the actual heavy lifting of how  ### WTF HAPPENED?
         the help command looks like. To change the behaviour, override the
         :meth:`~.HelpFormatter.format` method.
@@ -280,7 +286,8 @@ class Help(formatter.HelpFormatter, commands.Cog):
 
         embeds = []
         embed = discord.Embed(color=self.color, **emb['embed'])
-        embed.set_author(name='{0} Help Manual Page 1'.format(self.bot.user.name), icon_url=self.avatar)
+        embed.set_author(name='{0} Help Manual Page 1'.format(
+            self.bot.user.name), icon_url=self.avatar)
         embed.set_footer(**emb['footer'])
         txt = ""
         for field in emb['fields']:
@@ -290,7 +297,8 @@ class Help(formatter.HelpFormatter, commands.Cog):
                 txt = field["name"] + field["value"]
                 del embed
                 embed = discord.Embed(color=self.color, **emb['embed'])
-                embed.set_author(name='{} Help Manual Page {}'.format(self.bot.user.name, len(embeds)+1), icon_url=self.avatar)
+                embed.set_author(name='{} Help Manual Page {}'.format(
+                    self.bot.user.name, len(embeds)+1), icon_url=self.avatar)
                 embed.set_footer(**emb['footer'])
             embed.add_field(**field)
         embeds.append(embed)
@@ -300,7 +308,8 @@ class Help(formatter.HelpFormatter, commands.Cog):
 
     def simple_embed(self, title=None, description=None, color=None, author=None):
         # Shortcut
-        embed = discord.Embed(title=title, description=description, color=color)
+        embed = discord.Embed(
+            title=title, description=description, color=color)
         embed.set_footer(text=self.bot.formatter.get_ending_note())
         if author:
             embed.set_author(**author)
@@ -361,10 +370,9 @@ class Help(formatter.HelpFormatter, commands.Cog):
                         return
                 except AttributeError:
                     await self.send(self.destination,
-                                    embeds=[self.simple_embed(title=
-                                                            'Command "{0.name}" has no subcommands.'.format(command),
-                                                            color=self.color,
-                                                            author=self.author)])
+                                    embeds=[self.simple_embed(title='Command "{0.name}" has no subcommands.'.format(command),
+                                                              color=self.color,
+                                                              author=self.author)])
                     return
 
             await self.bot.formatter.format_help_for(ctx, command)

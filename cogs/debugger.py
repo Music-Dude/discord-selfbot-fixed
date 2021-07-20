@@ -1,8 +1,5 @@
 import pkg_resources
-import contextlib
 import sys
-import inspect
-import threading
 import os
 import shutil
 import glob
@@ -106,65 +103,102 @@ class Debugger(commands.Cog):
         """Shows useful informations to people that try to help you."""
         try:
             if embed_perms(ctx.message):
-                em = discord.Embed(color=0xad2929, title='\ud83e\udd16 Keanu\'s Discord Selfbot Debug Info')
+                em = discord.Embed(
+                    color=0xad2929, title='\ud83e\udd16 Keanu\'s Discord Selfbot Debug Info')
                 system = ''
                 if sys.platform == 'linux':
-                    system = subprocess.run(['uname', '-a'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+                    system = subprocess.run(
+                        ['uname', '-a'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
                     if 'ubuntu' in system.lower():
-                        system += '\n'+subprocess.run(['lsb_release', '-a'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+                        system += '\n' + \
+                            subprocess.run(
+                                ['lsb_release', '-a'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
                 elif sys.platform == 'win32':
-                    try: platform
-                    except: import platform
-                    system = '%s %s (%s)'%(platform.system(), platform.version(), sys.platform)
+                    try:
+                        platform
+                    except:
+                        import platform
+                    system = '%s %s (%s)' % (
+                        platform.system(), platform.version(), sys.platform)
                 else:
                     system = sys.platform
-                em.add_field(name='Operating System', value='%s' % system, inline=False)
+                em.add_field(name='Operating System', value='%s' %
+                             system, inline=False)
                 try:
-                    foo = subprocess.run("pip show discord.py", stdout=subprocess.PIPE)
-                    _ver = re.search(r'Version: (\d+.\d+.\w+)', str(foo.stdout)).group(1)
-                except: _ver = discord.__version__
-                em.add_field(name='Discord.py Version', value='%s'%_ver)
-                em.add_field(name='PIP Version', value='%s'%pkg_resources.get_distribution('pip').version)
+                    foo = subprocess.run(
+                        "pip show discord.py", stdout=subprocess.PIPE)
+                    _ver = re.search(r'Version: (\d+.\d+.\w+)',
+                                     str(foo.stdout)).group(1)
+                except:
+                    _ver = discord.__version__
+                em.add_field(name='Discord.py Version', value='%s' % _ver)
+                em.add_field(name='PIP Version', value='%s' %
+                             pkg_resources.get_distribution('pip').version)
                 if os.path.exists('.git'):
-                    try: em.add_field(name='Bot version', value='%s' % os.popen('git rev-parse --verify HEAD').read()[:7])
-                    except: pass
-                em.add_field(name='Python Version', value='%s (%s)'%(sys.version,sys.api_version), inline=False)
+                    try:
+                        em.add_field(name='Bot version', value='%s' % os.popen(
+                            'git rev-parse --verify HEAD').read()[:7])
+                    except:
+                        pass
+                em.add_field(name='Python Version', value='%s (%s)' %
+                             (sys.version, sys.api_version), inline=False)
                 if option and 'deps' in option.lower():
                     dependencies = ''
-                    dep_file = sorted(open('%s/requirements.txt' % os.getcwd()).read().split("\n"), key=str.lower)
+                    dep_file = sorted(
+                        open('%s/requirements.txt' % os.getcwd()).read().split("\n"), key=str.lower)
                     for dep in dep_file:
-                        if not '==' in dep: continue
+                        if not '==' in dep:
+                            continue
                         dep = dep.split('==')
                         cur = pkg_resources.get_distribution(dep[0]).version
-                        if cur == dep[1]: dependencies += '\✅ %s: %s\n'%(dep[0], cur)
-                        else: dependencies += '\❌ %s: %s / %s\n'%(dep[0], cur, dep[1])
-                    em.add_field(name='Dependencies', value='%s' % dependencies)
-                cog_list = ["cogs." + os.path.splitext(f)[0] for f in [os.path.basename(f) for f in glob.glob("cogs/*.py")]]
-                loaded_cogs = [x.__module__.split(".")[1] for x in self.bot.cogs.values()]
-                unloaded_cogs = [c.split(".")[1] for c in cog_list if c.split(".")[1] not in loaded_cogs]
+                        if cur == dep[1]:
+                            dependencies += '\✅ %s: %s\n' % (dep[0], cur)
+                        else:
+                            dependencies += '\❌ %s: %s / %s\n' % (
+                                dep[0], cur, dep[1])
+                    em.add_field(name='Dependencies', value='%s' %
+                                 dependencies)
+                cog_list = ["cogs." + os.path.splitext(
+                    f)[0] for f in [os.path.basename(f) for f in glob.glob("cogs/*.py")]]
+                loaded_cogs = [x.__module__.split(
+                    ".")[1] for x in self.bot.cogs.values()]
+                unloaded_cogs = [c.split(".")[1] for c in cog_list if c.split(".")[
+                    1] not in loaded_cogs]
                 if option and 'cogs' in option.lower():
-                    if len(loaded_cogs) > 0: em.add_field(name='Loaded Cogs ({})'.format(len(loaded_cogs)), value='\n'.join(sorted(loaded_cogs)), inline=True)
-                    if len(unloaded_cogs) > 0: em.add_field(name='Unloaded Cogs ({})'.format(len(unloaded_cogs)), value='\n'.join(sorted(unloaded_cogs)), inline=True)
-                else: em.add_field(name='Cogs', value='{} loaded.\n{} unloaded'.format(len(loaded_cogs), len(unloaded_cogs)), inline=True)
+                    if len(loaded_cogs) > 0:
+                        em.add_field(name='Loaded Cogs ({})'.format(
+                            len(loaded_cogs)), value='\n'.join(sorted(loaded_cogs)), inline=True)
+                    if len(unloaded_cogs) > 0:
+                        em.add_field(name='Unloaded Cogs ({})'.format(
+                            len(unloaded_cogs)), value='\n'.join(sorted(unloaded_cogs)), inline=True)
+                else:
+                    em.add_field(name='Cogs', value='{} loaded.\n{} unloaded'.format(
+                        len(loaded_cogs), len(unloaded_cogs)), inline=True)
                 if option and 'path' in option.lower():
                     paths = "\n".join(sys.path).strip()
                     if len(paths) > 300:
                         url = await hastebin(str(paths), self.bot.session)
-                        em.add_field(name='Import Paths', value=paths[:300]+' [(Show more)](%s)'%url)
+                        em.add_field(
+                            name='Import Paths', value=paths[:300]+' [(Show more)](%s)' % url)
                     else:
                         em.add_field(name='Import Paths', value=paths)
 
-                user = subprocess.run(['whoami'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+                user = subprocess.run(
+                    ['whoami'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
                 if sys.platform == 'linux':
-                    user += '@'+subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
-                em.set_footer(text='Generated at {:%Y-%m-%d %H:%M:%S} by {}'.format(datetime.datetime.now(), user))
-                try: await ctx.send(content=None, embed=em)
+                    user += '@' + \
+                        subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode(
+                            'utf-8').strip()
+                em.set_footer(
+                    text='Generated at {:%Y-%m-%d %H:%M:%S} by {}'.format(datetime.datetime.now(), user))
+                try:
+                    await ctx.send(content=None, embed=em)
                 except discord.HTTPException as e:
                     await ctx.send(content=None, embed=em)
             else:
                 await ctx.send('No permissions to embed debug info.')
         except:
-            await ctx.send('``` %s ```'%format_exc())
+            await ctx.send('``` %s ```' % format_exc())
 
     @commands.group(pass_context=True, invoke_without_command=True)
     async def py(self, ctx, *, msg):
@@ -186,8 +220,8 @@ class Debugger(commands.Cog):
 
             await self.interpreter(env, msg, ctx)
 
-
     # Save last [p]py cmd/script.
+
     @py.command(pass_context=True)
     async def save(self, ctx, *, msg):
         """Save the code you last ran. Ex: [p]py save stuff"""
@@ -206,7 +240,8 @@ class Debugger(commands.Cog):
                 os.remove('%s/cogs/utils/save/%s.txt' % (os.getcwd(), msg))
 
         try:
-            shutil.move('%s/cogs/utils/temp.txt' % os.getcwd(), '%s/cogs/utils/save/%s.txt' % (os.getcwd(), msg))
+            shutil.move('%s/cogs/utils/temp.txt' % os.getcwd(),
+                        '%s/cogs/utils/save/%s.txt' % (os.getcwd(), msg))
             await ctx.send(self.bot.bot_prefix + 'Saved last run cmd/script as ``%s.txt``' % msg)
         except:
             await ctx.send(self.bot.bot_prefix + 'Error saving file as ``%s.txt``' % msg)
@@ -217,16 +252,18 @@ class Debugger(commands.Cog):
         """Run code that you saved with the save commmand. Ex: [p]py run stuff parameter1 parameter2"""
         # Like in unix, the first parameter is the script name
         parameters = msg.split()
-        save_file = parameters[0] # Force scope
+        save_file = parameters[0]  # Force scope
         if save_file.endswith('.txt'):
-            save_file = save_file[:-(len('.txt'))] # Temptation to put '.txt' in a constant increases
+            # Temptation to put '.txt' in a constant increases
+            save_file = save_file[:-(len('.txt'))]
         else:
-            parameters[0] += '.txt' # The script name is always full
+            parameters[0] += '.txt'  # The script name is always full
 
         if not os.path.exists('%s/cogs/utils/save/%s.txt' % (os.getcwd(), save_file)):
             return await ctx.send(self.bot.bot_prefix + 'Could not find file ``%s.txt``' % save_file)
 
-        script = open('%s/cogs/utils/save/%s.txt' % (os.getcwd(), save_file)).read()
+        script = open('%s/cogs/utils/save/%s.txt' %
+                      (os.getcwd(), save_file)).read()
 
         env = {
             'bot': self.bot,
@@ -352,11 +389,12 @@ class Debugger(commands.Cog):
                 try:
                     self.bot.load_extension("cogs.{}".format(cog))
                 except Exception as e:
-                    errors += 'Failed to load module: `{}.py` due to `{}: {}`\n'.format(cog, type(e).__name__, e)
+                    errors += 'Failed to load module: `{}.py` due to `{}: {}`\n'.format(
+                        cog, type(e).__name__, e)
         if not errors:
             await ctx.send(self.bot.bot_prefix + "All core modules loaded")
         else:
-            await ctx.send(self.bot.bot_prefix + errors)            
+            await ctx.send(self.bot.bot_prefix + errors)
 
     @commands.command(pass_context=True)
     async def system(self, ctx, *, command):
@@ -379,7 +417,8 @@ class Debugger(commands.Cog):
         out = "There was no output of that command."
         note = ""
         try:
-            out = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, timeout=timeout).decode()
+            out = subprocess.check_output(
+                command, shell=True, stderr=subprocess.STDOUT, timeout=timeout).decode()
         except subprocess.CalledProcessError as e:
             if e.output:
                 out = e.output.decode()
@@ -390,7 +429,7 @@ class Debugger(commands.Cog):
             note = "Command timed out (%0.1fs)\nYou may set a different timeout by using `timeout=` with the command." % timeout
 
         out = out[:1000] + (out[1000:] and '..')
-        await ctx.send("Output of `%s`: ```\n%s\n```*%s*" % (command, out, note))
+        await ctx.send("Output of `%s`: ```\n%s\n```*%s *" % (command, out, note))
 
     @commands.command(pass_context=True)
     async def redirect(self, ctx):

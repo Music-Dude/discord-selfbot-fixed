@@ -18,30 +18,33 @@ class Replacements(commands.Cog):
         """Replace A with B"""
         await ctx.message.delete()
         menu = Menu("What would you like to do?")
-        
-        
+
         # handle new replacements
+
         def new_replacement(trigger, val):
             self.replacement_dict[trigger.content] = val.content
             with open("settings/replacements.json", "w+") as f:
                 json.dump(self.replacement_dict, f, sort_keys=True, indent=4)
-        
+
         end = menu.Submenu("end", "Successfully added a new replacement!")
-        
-        menu.add_child(menu.InputSubmenu("Add a new replacement", ["Enter a replacement trigger.", "Enter a string to replace the trigger with."], new_replacement, end))
+
+        menu.add_child(menu.InputSubmenu("Add a new replacement", [
+                       "Enter a replacement trigger.", "Enter a string to replace the trigger with."], new_replacement, end))
 
         # handle removing replacements
         def remove_replacement(idx, val):
             self.replacement_dict.pop(val)
             with open("settings/replacements.json", "w+") as f:
                 json.dump(self.replacement_dict, f, sort_keys=True, indent=4)
-            
+
         end = menu.Submenu("end", "Successfully removed a replacement!")
-        menu.add_child(menu.ChoiceSubmenu("Remove a replacement", "Pick a replacement to remove.", self.replacement_dict, remove_replacement, end))
-        
+        menu.add_child(menu.ChoiceSubmenu("Remove a replacement",
+                       "Pick a replacement to remove.", self.replacement_dict, remove_replacement, end))
+
         # handle listing replacements
-        menu.add_child(menu.Submenu("List all your replacements", "\n".join([replacement + ": " + self.replacement_dict[replacement] for replacement in self.replacement_dict])))
-        
+        menu.add_child(menu.Submenu("List all your replacements", "\n".join(
+            [replacement + ": " + self.replacement_dict[replacement] for replacement in self.replacement_dict])))
+
         # go
         await menu.start(ctx)
 
@@ -49,9 +52,11 @@ class Replacements(commands.Cog):
         if message.author == self.bot.user:
             replaced_message = message.content
             for replacement in self.replacement_dict:
-                replaced_message = replaced_message.replace(replacement, self.replacement_dict[replacement])
+                replaced_message = replaced_message.replace(
+                    replacement, self.replacement_dict[replacement])
             if message.content != replaced_message:
                 await message.edit(content=replaced_message)
+
 
 def setup(bot):
     bot.add_cog(Replacements(bot))

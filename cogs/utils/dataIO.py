@@ -3,6 +3,7 @@ from json import decoder, dump, load
 from os import replace
 from os.path import splitext
 
+
 class DataIO():
 
     def save_json(self, filename, data):
@@ -10,15 +11,15 @@ class DataIO():
         path, ext = splitext(filename)
         tmp_file = "{}.{}.tmp".format(path, randint(1000, 9999))
         with open(tmp_file, 'w', encoding='utf-8') as f:
-            dump(data, f, indent=4,sort_keys=True,separators=(',',' : '))
+            dump(data, f, indent=4, sort_keys=True, separators=(',', ' : '))
         try:
             with open(tmp_file, 'r', encoding='utf-8') as f:
                 data = load(f)
         except decoder.JSONDecodeError:
             print("Attempted to write file {} but JSON "
-                                  "integrity check on tmp file has failed. "
-                                  "The original file is unaltered."
-                                  "".format(filename))
+                  "integrity check on tmp file has failed. "
+                  "The original file is unaltered."
+                  "".format(filename))
             return False
         except Exception as e:
             print('A issue has occured saving ' + filename + '.\n'
@@ -61,15 +62,15 @@ class DataIO():
         path, ext = splitext(filename)
         tmp_file = "{}.{}.tmp".format(path, randint(1000, 9999))
         with open(tmp_file, 'w', encoding='utf-8') as f:
-            dump(file, f, indent=4,sort_keys=True,separators=(',',' : '))
+            dump(file, f, indent=4, sort_keys=True, separators=(',', ' : '))
         try:
             with open(tmp_file, 'r', encoding='utf-8') as f:
                 data = load(f)
         except decoder.JSONDecodeError:
             print("Attempted to write file {} but JSON "
-                                  "integrity check on tmp file has failed. "
-                                  "The original file is unaltered."
-                                  "".format(filename))
+                  "integrity check on tmp file has failed. "
+                  "The original file is unaltered."
+                  "".format(filename))
             return False
         except Exception as e:
             print('A issue has occured saving ' + filename + '.\n'
@@ -93,5 +94,6 @@ class DataIO():
                   'Traceback:\n'
                   '{0} {1}'.format(str(e), e.args))
             return False
+
 
 dataIO = DataIO()

@@ -17,7 +17,9 @@ class Emoji(commands.Cog):
 
     def find_emoji(self, msg):
         msg = re.sub("<a?:(.+):([0-9]+)>", "\\2", msg)
-        color_modifiers = ["1f3fb", "1f3fc", "1f3fd", "1f44c", "1f3fe", "1f3ff"]  # These color modifiers aren't in Twemoji
+        # These color modifiers aren't in Twemoji
+        color_modifiers = ["1f3fb", "1f3fc",
+                           "1f3fd", "1f44c", "1f3fe", "1f3ff"]
 
         name = None
 
@@ -52,7 +54,8 @@ class Emoji(commands.Cog):
             emoji_code = '-'.join(codepoints)
         else:
             emoji_code = "3{}-{}".format(codepoints[0][0], codepoints[0][1])
-        url = "https://raw.githubusercontent.com/astronautlevel2/twemoji/gh-pages/128x128/{}.png".format(emoji_code)
+        url = "https://raw.githubusercontent.com/astronautlevel2/twemoji/gh-pages/128x128/{}.png".format(
+            emoji_code)
         name = "emoji.png"
         return name, url, "N/A", "Official"
 
@@ -177,9 +180,11 @@ class Emoji(commands.Cog):
             image = emote.url
             request = requests.get(image)
             if emote.animated is True:
-                open(f"emotes/{strippedname}/{emote.name}.gif", "wb").write(request.content)
+                open(f"emotes/{strippedname}/{emote.name}.gif",
+                     "wb").write(request.content)
             else:
-                open(f"emotes/{strippedname}/{emote.name}.png", "wb").write(request.content)
+                open(f"emotes/{strippedname}/{emote.name}.png",
+                     "wb").write(request.content)
         await ctx.send(f"saved emotes from '{server.name}' to `emotes/{strippedname}`")
 
         if zipfile:

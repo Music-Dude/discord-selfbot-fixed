@@ -5,6 +5,7 @@ import hashlib
 from cogs.utils.config import write_config_value
 from discord.ext import commands
 
+
 class Track(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

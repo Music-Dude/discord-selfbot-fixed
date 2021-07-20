@@ -35,9 +35,8 @@ class Mod(commands.Cog):
         else:
             return await ctx.message.edit(content=self.bot.bot_prefix + 'Could not find user.')
 
-
     # TODO: Add reason with ban
-    @commands.command(aliases=['hban'], pass_context=True)     
+    @commands.command(aliases=['hban'], pass_context=True)
     async def hackban(self, ctx, user_id: int):
         """Bans a user outside of the server."""
         author = ctx.message.author
@@ -52,10 +51,9 @@ class Mod(commands.Cog):
             await ctx.message.edit(content=self.bot.bot_prefix + 'Banned user: %s' % user_id)
         except discord.NotFound:
             await ctx.message.edit(content=self.bot.bot_prefix + 'Could not find user. '
-                               'Invalid user ID was provided.')
+                                   'Invalid user ID was provided.')
         except discord.errors.Forbidden:
             await ctx.message.edit(content=self.bot.bot_prefix + 'Could not ban user. Not enough permissions.')
-
 
     @commands.command(pass_context=True)
     async def ban(self, ctx, user, *, reason=""):
@@ -82,7 +80,8 @@ class Mod(commands.Cog):
             try:
                 await user.ban(reason=reason)
                 await ctx.guild.unban(user)
-                return_msg = "Banned and unbanned user `{}`".format(user.mention)
+                return_msg = "Banned and unbanned user `{}`".format(
+                    user.mention)
                 if reason:
                     return_msg += " for reason `{}`".format(reason)
                 return_msg += "."
@@ -173,7 +172,8 @@ class Mod(commands.Cog):
             is_empty = self.are_overwrites_empty(overwrites)
             try:
                 if not is_empty:
-                    ctx.message.channel.set_permissions(user, overwrite=overwrites)
+                    ctx.message.channel.set_permissions(
+                        user, overwrite=overwrites)
                 else:
                     await channel.set_permissions(user, overwrite=None)
                 await channel.set_permissions(user, overwrite=overwrites)
@@ -187,9 +187,9 @@ class Mod(commands.Cog):
     @commands.command(aliases=['p'], pass_context=True, no_pm=True)
     async def purge(self, ctx, msgs: int, members="everyone", *, txt=None):
         """Purge last n messages or nmessages with a word. Requires Manage Messages permission. [p]help purge for more info.
-        
+
         Ex:
-        
+
         [p]purge 20 - deletes the last 20 messages in a channel sent by anyone.
         [p]purge 20 everyone stuff - deletes any messages in the last 20 messages that contain the word 'stuff'.
         [p]purge 20 @appu1232 - deletes any messages in the last 20 messages that were sent by appu1232.

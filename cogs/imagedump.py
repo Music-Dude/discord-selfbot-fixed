@@ -42,7 +42,8 @@ class Imagedump(commands.Cog):
 
         urls = []
         try:
-            urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content)
+            urls = re.findall(
+                'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content)
         except:
             pass
 
@@ -56,7 +57,7 @@ class Imagedump(commands.Cog):
         """Mass downloads images from a channel. [p]help imagedump for info.
         ----Simple----
         [p]imagedump <n> - checks the last <n> messages in this chat and downloads all the images/gifs/webms found.
-        
+
         ----More options----
         Example: I want a new wallpaper. I'll check the last 5000 messages in this channel and download 100 items with type .png that fit on my 16:9 monitor with dimensions 1920x1080. This is what I would do:
 
@@ -66,23 +67,23 @@ class Imagedump(commands.Cog):
 
         General Syntax (only include the options you want):
         [p]imagedump <n> | items=<m> | before=YYYY-MM-DD | after=YYYY-MM-DD | dim=WidthxHeight | ratio=Width:Height | type=<type_of_item> | channel=<id> | user=<id> - add any one or more of these to the command to furthur specify your requirements to find items.
-        
+
         - items=<m> - when checking the last <n> messages, only download <m> items max.
-        
+
         - before=YYYY-MM-DD - check <n> messages before this date. Ex: before=2017-02-16
-        
+
         - after=YYYY-MM-DD - check <n> messages after this date.
-        
+
         - dim=WidthxHeight - only download items with these dimensions. Ex: dim=1920x1080 Optionally, do dim>=WidthxHeight for images greater than or equal and dim<=WidthxHeight for less than or equal to these dimensions.
-        
+
         - ratio=Width:Height - only download items with these ratios. Ex: ratio=16:9
-        
+
         - type=<type_of_item> - only download these types of files. Ex: type=png or type=gif, webm All options: jpg, png, gif (includes gifv), webm.
-        
+
         - channel=<id> - download from a different channel (can be a from a different server). Enable developer mode, right click on the channel name, and hit copy id to get the id. Ex: channel=299293492645986307
-        
+
         - user=<id> - download only items posted by this user. Enable developer mode, right click on user, copy id to get their id. Ex: user=124910128582361092
-        
+
         """
 
         if ctx.invoked_subcommand is None:
@@ -127,7 +128,8 @@ class Imagedump(commands.Cog):
                         if i.strip().lower().startswith('items='):
                             limit_images = i.strip()[6:].strip()
                             if limit_images.isdigit():
-                                limit_images_msg = 'Up to {} items. '.format(limit_images)
+                                limit_images_msg = 'Up to {} items. '.format(
+                                    limit_images)
                                 limit_images = int(limit_images)
                             else:
                                 return await ctx.send(self.bot.bot_prefix + 'Invalid Syntax. ``items=`` should be the number of images. Ex: ``>imagedump 500 | items=10``')
@@ -141,7 +143,8 @@ class Imagedump(commands.Cog):
                             else:
                                 x, y = x.strip(), y.strip()
                                 fixed = 'yes'
-                                dimensions_msg = 'Dimensions: {}. '.format(dimensions)
+                                dimensions_msg = 'Dimensions: {}. '.format(
+                                    dimensions)
 
                         if i.strip().lower().startswith('dim>='):
                             dimensions = i.strip()[5:].strip()
@@ -153,7 +156,8 @@ class Imagedump(commands.Cog):
                             else:
                                 x, y = x.strip(), y.strip()
                                 fixed = 'more'
-                                dimensions_msg = 'Dimensions: {} or larger. '.format(dimensions)
+                                dimensions_msg = 'Dimensions: {} or larger. '.format(
+                                    dimensions)
 
                         if i.strip().lower().startswith('dim<='):
                             dimensions = i.strip()[5:].strip()
@@ -165,7 +169,8 @@ class Imagedump(commands.Cog):
                             else:
                                 x, y = x.strip(), y.strip()
                                 fixed = 'less'
-                                dimensions_msg = 'Dimensions: {} or smaller. '.format(dimensions)
+                                dimensions_msg = 'Dimensions: {} or smaller. '.format(
+                                    dimensions)
 
                         if i.strip().lower().startswith('ratio='):
                             ratio = i.strip()[6:].strip()
@@ -214,7 +219,7 @@ class Imagedump(commands.Cog):
                             channel = self.bot.get_channel(int(channel))
                             if not channel:
                                 return await ctx.send(self.bot.bot_prefix + 'Channel not found. Are you using the right syntax? ``channel=`` should be the channel id. '
-                                                                                                     'Ex: ``>imagedump 500 | channel=299431230984683520``')
+                                                      'Ex: ``>imagedump 500 | channel=299431230984683520``')
                             limit -= 1
                             channel_msg = 'Channel: {} '.format(channel.name)
 
@@ -226,7 +231,7 @@ class Imagedump(commands.Cog):
                                     break
                             if not user:
                                 return await ctx.send(self.bot.bot_prefix + 'User not found. Are you using the right syntax? ``user=`` should be the user\'s id. '
-                                                                                                     'Ex: ``>imagedump 500 | user=124910128582361092``')
+                                                      'Ex: ``>imagedump 500 | user=124910128582361092``')
                             user_msg = 'User: {}'.format(user.name)
 
                 await ctx.message.delete()
@@ -244,25 +249,30 @@ class Imagedump(commands.Cog):
                 if not os.path.exists('{}image_dump'.format(path)):
                     os.makedirs('{}image_dump'.format(path))
                 try:
-                    new_dump = time.strftime("%Y-%m-%dT%H_%M_%S_") + channel.name + '_' + channel.guild.name
+                    new_dump = time.strftime(
+                        "%Y-%m-%dT%H_%M_%S_") + channel.name + '_' + channel.guild.name
                 except:
                     new_dump = time.strftime("%Y-%m-%dT%H_%M_%S_")
-                new_dump = "".join([x if x.isalnum() else "_" for x in new_dump])
+                new_dump = "".join(
+                    [x if x.isalnum() else "_" for x in new_dump])
                 new_dump.replace('/', '_')
                 os.makedirs('{}image_dump/{}'.format(path, new_dump))
                 if not silent:
                     which_channel = 'in this channel...'
                     if ctx.message.channel != channel:
-                        which_channel = 'in channel ``{}``'.format(channel.name)
+                        which_channel = 'in channel ``{}``'.format(
+                            channel.name)
                     if not simple:
-                        params = 'Parameters: ``{}{}{}{}{}{}{}{}``'.format(limit_images_msg, before_msg, after_msg, dimensions_msg, ratio_msg, type_of_items_msg, channel_msg, user_msg)
+                        params = 'Parameters: ``{}{}{}{}{}{}{}{}``'.format(
+                            limit_images_msg, before_msg, after_msg, dimensions_msg, ratio_msg, type_of_items_msg, channel_msg, user_msg)
                     else:
                         params = ''
                     await ctx.send(self.bot.bot_prefix + 'Downloading all images/gifs/webms from the last {} messages {}\nSaving to ``image_dump/{}`` Check console for progress.\n{}'.format(str(limit-1), which_channel, new_dump, params))
                 start = time.time()
                 images = []
                 if limit > 100000:
-                    print('Fetching last %s messages (this may take a few minutes)...' % str(limit - 1))
+                    print(
+                        'Fetching last %s messages (this may take a few minutes)...' % str(limit - 1))
                 else:
                     print('Fetching last %s messages...' % str(limit-1))
                 async for message in channel.history(limit=limit, before=before, after=after):
@@ -278,7 +288,8 @@ class Imagedump(commands.Cog):
                     for url in images:
                         fp.write(url + '\n')
 
-                args = [sys.executable, 'cogs/utils/image_dump.py', path, new_dump, opt['image_dump_delay'], x, y, dimx, dimy, fixed]
+                args = [sys.executable, 'cogs/utils/image_dump.py', path,
+                        new_dump, opt['image_dump_delay'], x, y, dimx, dimy, fixed]
                 p = subprocess.Popen(args)
                 self.bot.imagedumps.append(p)
 
@@ -303,7 +314,7 @@ class Imagedump(commands.Cog):
                 if int(failures) != 0:
                     if not silent:
                         await ctx.send(self.bot.bot_prefix + 'Done! ``{}`` items downloaded. ``{}`` However, ``{}`` items failed to download. Check your console for more info on which ones were missed. '
-                                                                                      'Finished in: ``{} seconds.``'.format(str(total), size, str(failures), str(round(stop - start, 2))))
+                                       'Finished in: ``{} seconds.``'.format(str(total), size, str(failures), str(round(stop - start, 2))))
                     else:
                         print('{} items failed to download. See above for missed links. '
                               'Finished in: {} seconds.'.format(str(failures), str(round(stop - start, 2))))
@@ -311,10 +322,11 @@ class Imagedump(commands.Cog):
                     if not silent:
                         await ctx.send(self.bot.bot_prefix + 'Done! ``{}`` items downloaded. ``{}`` Finished in: ``{} seconds.``'.format(str(total), size, str(round(stop-start, 2))))
                     else:
-                        print('Finished in: {} seconds'.format(str(round(stop-start, 2))))
+                        print('Finished in: {} seconds'.format(
+                            str(round(stop-start, 2))))
             else:
                 await ctx.send(self.bot.bot_prefix + 'Invalid syntax. ``>imagedump <n>`` where n is the number of messages to search in this channel. '
-                                                                              'Ex: ``>imagedump 100``\n``>imagedump dir path/to/directory`` if you want to change where images are saved.')
+                               'Ex: ``>imagedump 100``\n``>imagedump dir path/to/directory`` if you want to change where images are saved.')
 
     @imagedump.command(pass_context=True)
     async def dir(self, ctx, *, msg: str = None):
@@ -392,7 +404,8 @@ class Imagedump(commands.Cog):
                     fixed = fp.readline().strip()
                 os.remove('cogs/utils/{}'.format(i))
 
-                args = [sys.executable, 'cogs/utils/image_dump.py', path, new_dump, delay, x, y, dimx, dimy, fixed]
+                args = [sys.executable, 'cogs/utils/image_dump.py',
+                        path, new_dump, delay, x, y, dimx, dimy, fixed]
                 print('\nResuming...')
                 p = subprocess.Popen(args)
                 self.bot.imagedumps.append(p)

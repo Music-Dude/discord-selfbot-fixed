@@ -109,7 +109,7 @@ class Utility(commands.Cog):
     @commands.command(pass_context=True)
     async def search(self, ctx, search):
         """Search for a bot command by name."""
-        matches = {command.name.replace(search, "**%s**" % search) for command in self.bot.commands if search in command.name}
+        matches = {command.name.replace(search, "**%s**" % search) + "- %s" % command.cog_name for command in self.bot.commands if search in command.name}
         
         if matches:
             em = discord.Embed(title="Command search results", description="\n".join(matches))

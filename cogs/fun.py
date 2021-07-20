@@ -45,7 +45,7 @@ class Fun(commands.Cog):
                      'Very doubtful']
 
     emoji_dict = {
-    # these arrays are in order of "most desirable". Put emojis that most convincingly correspond to their letter near the front of each array.
+        # these arrays are in order of "most desirable". Put emojis that most convincingly correspond to their letter near the front of each array.
         'a': ['🇦', '🅰', '🍙', '🔼', '4⃣'],
         'b': ['🇧', '🅱', '8⃣'],
         'c': ['🇨', '©', '🗜'],
@@ -130,7 +130,8 @@ class Fun(commands.Cog):
     # used in textflip
     text_flip = {}
     char_list = "!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}"
-    alt_char_list = "{|}zʎxʍʌnʇsɹbdouɯlʞɾᴉɥƃɟǝpɔqɐ,‾^[\]Z⅄XMΛ∩┴SɹQԀONW˥ʞſIHפℲƎpƆq∀@¿<=>;:68ㄥ9ϛㄣƐᄅƖ0/˙-'+*(),⅋%$#¡"[::-1]
+    alt_char_list = "{|}zʎxʍʌnʇsɹbdouɯlʞɾᴉɥƃɟǝpɔqɐ,‾^[\]Z⅄XMΛ∩┴SɹQԀONW˥ʞſIHפℲƎpƆq∀@¿<=>;:68ㄥ9ϛㄣƐᄅƖ0/˙-'+*(),⅋%$#¡"[
+        ::-1]
     for idx, char in enumerate(char_list):
         text_flip[char] = alt_char_list[idx]
         text_flip[alt_char_list[idx]] = char
@@ -138,7 +139,7 @@ class Fun(commands.Cog):
     # used in [p]react, checks if it's possible to react with the duper string or not
     def has_dupe(duper):
         collect_my_duper = list(filter(lambda x: x != '⃣',
-                                       duper))  #   ⃣ appears twice in the number unicode thing, so that must be stripped
+                                       duper))  # ⃣ appears twice in the number unicode thing, so that must be stripped
         return len(set(collect_my_duper)) != len(collect_my_duper)
 
     # used in [p]react, replaces e.g. 'ng' with '🆖'
@@ -154,13 +155,15 @@ class Fun(commands.Cog):
             char_count = react_me.count(char)
             if char_count > 1:  # there's a duplicate of this letter:
                 if len(Fun.emoji_dict[
-                           char]) >= char_count:  # if we have enough different ways to say the letter to complete the emoji chain
+                        char]) >= char_count:  # if we have enough different ways to say the letter to complete the emoji chain
                     i = 0
                     while i < char_count:  # moving goal post necessitates while loop instead of for
                         if Fun.emoji_dict[char][i] not in react_me:
-                            react_me = react_me.replace(char, Fun.emoji_dict[char][i], 1)
+                            react_me = react_me.replace(
+                                char, Fun.emoji_dict[char][i], 1)
                         else:
-                            char_count += 1  # skip this one because it's already been used by another replacement (e.g. circle emoji used to replace O already, then want to replace 0)
+                            # skip this one because it's already been used by another replacement (e.g. circle emoji used to replace O already, then want to replace 0)
+                            char_count += 1
                         i += 1
             else:
                 if char_count == 1:
@@ -180,7 +183,8 @@ class Fun(commands.Cog):
                 color = 0xFF0000
             em = discord.Embed(color=color)
             em.add_field(name='\u2753 Question', value=msg)
-            em.add_field(name='\ud83c\udfb1 8ball', value=self.ball[answer], inline=False)
+            em.add_field(name='\ud83c\udfb1 8ball',
+                         value=self.ball[answer], inline=False)
             await ctx.send(content=None, embed=em)
             await ctx.message.delete()
         else:
@@ -190,7 +194,7 @@ class Fun(commands.Cog):
     async def choose(self, ctx, *, choices: str):
         """Choose randomly from the options you give. [p]choose this | that"""
         await ctx.send(
-                       self.bot.bot_prefix + 'I choose: ``{}``'.format(random.choice(choices.split("|"))))
+            self.bot.bot_prefix + 'I choose: ``{}``'.format(random.choice(choices.split("|"))))
 
     @commands.command(pass_context=True)
     async def l2g(self, ctx, *, msg: str, aliases=['lmgtfy']):
@@ -225,7 +229,7 @@ class Fun(commands.Cog):
                     await ctx.send(self.bot.bot_prefix + '```\n{}\n```'.format(msg))
             else:
                 await ctx.send(
-                               self.bot.bot_prefix + 'Please input text to convert to ascii art. Ex: ``>ascii stuff``')
+                    self.bot.bot_prefix + 'Please input text to convert to ascii art. Ex: ``>ascii stuff``')
 
     @ascii.command(pass_context=True)
     async def font(self, ctx, *, txt: str):
@@ -256,7 +260,8 @@ class Fun(commands.Cog):
                 dice_roll_ints.append(result)
         except ValueError:
             return await ctx.send(self.bot.bot_prefix + invalid)
-        embed = discord.Embed(title="Dice rolls:", description=' '.join(dice_rolls))
+        embed = discord.Embed(title="Dice rolls:",
+                              description=' '.join(dice_rolls))
         embed.add_field(name="Total:", value=sum(dice_roll_ints))
         await ctx.send("", embed=embed)
 
@@ -269,14 +274,16 @@ class Fun(commands.Cog):
                 result += self.text_flip[char]
             else:
                 result += char
-        await ctx.message.edit(content=result[::-1])  # slice reverses the string
+        # slice reverses the string
+        await ctx.message.edit(content=result[::-1])
 
     @commands.command(pass_context=True)
     async def regional(self, ctx, *, msg):
         """Replace letters with regional indicator emojis"""
         await ctx.message.delete()
         msg = list(msg)
-        regional_list = [self.regionals[x.lower()] if x.isalnum() or x in ["!", "?"] else x for x in msg]
+        regional_list = [self.regionals[x.lower()] if x.isalnum() or x in [
+            "!", "?"] else x for x in msg]
         regional_output = '\u200b'.join(regional_list)
         await ctx.send(regional_output)
 
@@ -312,19 +319,21 @@ class Fun(commands.Cog):
         char_index = 0
         emotes = re.findall(r"<a?:(?:[a-zA-Z0-9]+?):(?:[0-9]+?)>", msg)
         react_me = re.sub(r"<a?:([a-zA-Z0-9]+?):([0-9]+?)>", "", msg)
-        
+
         for emote in emotes:
-            reactions.append(discord.utils.get(self.bot.emojis, id=int(emote.split(":")[-1][:-1])))
+            reactions.append(discord.utils.get(
+                self.bot.emojis, id=int(emote.split(":")[-1][:-1])))
             non_unicode_emoji_list.append(emote)
-            
-        
+
         if Fun.has_dupe(non_unicode_emoji_list):
-            return await ctx.send(self.bot.bot_prefix + 
+            return await ctx.send(self.bot.bot_prefix +
                                   "You requested that I react with at least two of the exact same specific emoji. I'll try to find alternatives for alphanumeric text, but if you specify a specific emoji must be used, I can't help.")
 
-        react_me_original = react_me  # we'll go back to this version of react_me if prefer_combine is false but we can't make the reaction happen unless we combine anyway.
+        # we'll go back to this version of react_me if prefer_combine is false but we can't make the reaction happen unless we combine anyway.
+        react_me_original = react_me
 
-        if Fun.has_dupe(react_me):  # there's a duplicate letter somewhere, so let's go ahead try to fix it.
+        # there's a duplicate letter somewhere, so let's go ahead try to fix it.
+        if Fun.has_dupe(react_me):
             if prefer_combine:  # we want a smaller reaction string, so we'll try to combine anything we can right away
                 react_me = Fun.replace_combos(react_me)
             react_me = Fun.replace_letters(react_me)
@@ -334,15 +343,16 @@ class Fun(commands.Cog):
                     react_me = react_me_original
                     react_me = Fun.replace_combos(react_me)
                     react_me = Fun.replace_letters(react_me)
-                    if Fun.has_dupe(react_me):  # this failed too, so there's really nothing we can do anymore.
+                    # this failed too, so there's really nothing we can do anymore.
+                    if Fun.has_dupe(react_me):
                         return await ctx.send(self.bot.bot_prefix + "Failed to fix all duplicates. Cannot react with this string.")
                 else:
                     return await ctx.send(self.bot.bot_prefix + "Failed to fix all duplicates. Cannot react with this string.")
-                    
 
             lt_count = 0
             for char in react_me:
-                if char not in "0123456789":  # these unicode characters are weird and actually more than one character.
+                # these unicode characters are weird and actually more than one character.
+                if char not in "0123456789":
                     if char != '⃣':  # </3
                         reactions.append(char)
                 else:
@@ -367,7 +377,8 @@ class Fun(commands.Cog):
         else:
             found_channel = find_channel(ctx.guild.channels, channel)
             if not found_channel:
-                found_channel = find_channel(self.bot.get_all_channels(), channel)
+                found_channel = find_channel(
+                    self.bot.get_all_channels(), channel)
             if found_channel:
                 async for message in found_channel.history(limit=limit):
                     if (not msg_id and message.id != ctx.message.id) or (msg_id == message.id):
@@ -378,12 +389,12 @@ class Fun(commands.Cog):
                                 pass
             else:
                 await ctx.send(self.bot.bot_prefix + "Channel not found.")
-    
+
     @commands.command(pass_context=True)
     async def badapple(self, ctx):
         CLIP_FRAMES = 6571
         CLIP_LENGTH = 219.0666
-        ASCII_CHARS = ['⠀','⠄','⠆','⠖','⠶','⡶','⣩','⣪','⣫','⣾','⣿']
+        ASCII_CHARS = ['⠀', '⠄', '⠆', '⠖', '⠶', '⡶', '⣩', '⣪', '⣫', '⣾', '⣿']
         ASCII_CHARS.reverse()
         ASCII_CHARS = ASCII_CHARS[::-1]
 
@@ -404,7 +415,8 @@ class Fun(commands.Cog):
 
         def modify(image, buckets=25):
             initial_pixels = list(image.getdata())
-            new_pixels = [ASCII_CHARS[pixel_value//buckets] for pixel_value in initial_pixels]
+            new_pixels = [ASCII_CHARS[pixel_value//buckets]
+                          for pixel_value in initial_pixels]
             return ''.join(new_pixels)
 
         def do(image, new_width=WIDTH):
@@ -414,7 +426,8 @@ class Fun(commands.Cog):
             pixels = modify(image)
             len_pixels = len(pixels)
 
-            new_image = [pixels[index:index+int(new_width)] for index in range(0, len_pixels, int(new_width))]
+            new_image = [pixels[index:index+int(new_width)]
+                         for index in range(0, len_pixels, int(new_width))]
 
             return '\n'.join(new_image)
 
@@ -423,7 +436,7 @@ class Fun(commands.Cog):
             try:
                 image = Image.open(path)
             except Exception:
-                print("Unable to find image in",path)
+                print("Unable to find image in", path)
                 return
             image = do(image)
 
@@ -432,7 +445,8 @@ class Fun(commands.Cog):
         frames = []
 
         for i in range(0, int(CLIP_FRAMES/4)+1):
-            path = "frames/frame"+str(i*4)+".jpg" #<--- path to folder containing every frame of the video
+            # <--- path to folder containing every frame of the video
+            path = "frames/frame"+str(i*4)+".jpg"
             frames.append(runner(path))
 
         oldTimestamp = time.time()
@@ -443,7 +457,7 @@ class Fun(commands.Cog):
         minutes = 0
 
         i = 0
-        
+
         while i < len(frames)-1:
             disp = False
             while not disp:
@@ -451,11 +465,11 @@ class Fun(commands.Cog):
                 if (newTimestamp - oldTimestamp) >= TIMEOUT:
 
                     await ctx.send(frames[int(i)])
-                    
+
                     newTimestamp = time.time()
 
                     i += (newTimestamp - oldTimestamp)/TIMEOUT
-                    
+
                     oldTimestamp = newTimestamp
 
                     disp = True

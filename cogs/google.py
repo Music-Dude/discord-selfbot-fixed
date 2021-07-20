@@ -22,7 +22,8 @@ class Google(commands.Cog):
         e = discord.Embed(colour=0x0057e7)
 
         # check if it's a calculator card:
-        calculator = node.find(".//table/tr/td/span[@class='nobr']/h2[@class='r']")
+        calculator = node.find(
+            ".//table/tr/td/span[@class='nobr']/h2[@class='r']")
         if calculator is not None:
             e.title = 'Calculator'
             e.description = ''.join(calculator.itertext())
@@ -76,13 +77,15 @@ class Google(commands.Cog):
                         body = []
                         for index, definition in enumerate(data[1], 1):
                             body.append('%s. %s' % (index, definition.text))
-                        e.add_field(name=lexical_category, value='\n'.join(body), inline=False)
+                        e.add_field(name=lexical_category,
+                                    value='\n'.join(body), inline=False)
                     except:
                         continue
                 return e
 
         # check for translate card
-        words = parent.find(".//ol/div[@class='g']/div/table/tr/td/h3[@class='r']")
+        words = parent.find(
+            ".//ol/div[@class='g']/div/table/tr/td/h3[@class='r']")
         if words is not None:
             e.title = 'Google Translate'
             e.add_field(name='Input', value=words[0].text,  inline=True)
@@ -93,9 +96,12 @@ class Google(commands.Cog):
         time_in = parent.find(".//ol//div[@class='_Tsb _HOb _Qeb']")
         if time_in is not None:
             try:
-                time_place = ''.join(time_in.find("span[@class='_HOb _Qeb']").itertext()).strip()
-                the_time = ''.join(time_in.find("div[@class='_rkc _Peb']").itertext()).strip()
-                the_date = ''.join(time_in.find("div[@class='_HOb _Qeb']").itertext()).strip()
+                time_place = ''.join(time_in.find(
+                    "span[@class='_HOb _Qeb']").itertext()).strip()
+                the_time = ''.join(time_in.find(
+                    "div[@class='_rkc _Peb']").itertext()).strip()
+                the_date = ''.join(time_in.find(
+                    "div[@class='_HOb _Qeb']").itertext()).strip()
             except:
                 return None
             else:
@@ -138,7 +144,8 @@ class Google(commands.Cog):
             e.add_field(name='Wind', value=wind)
 
         try:
-            humidity = ''.join(table[4][0].itertext()).replace('Humidity: ', '')
+            humidity = ''.join(table[4][0].itertext()
+                               ).replace('Humidity: ', '')
         except:
             return None
         else:
@@ -165,7 +172,8 @@ class Google(commands.Cog):
             if card:
                 value = '\n'.join(entries[:2])
                 if value:
-                    card.add_field(name='Search Results', value=value, inline=False)
+                    card.add_field(name='Search Results',
+                                   value=value, inline=False)
                 return await ctx.send(embed=card)
             if not entries:
                 return await ctx.send('No results.')
@@ -203,7 +211,8 @@ class Google(commands.Cog):
                 em = discord.Embed()
                 if embed_perms(ctx.message):
                     em.set_image(url=result['items'][item]['link'])
-                    show_search = get_config_value("optional_config", "show_search_term")
+                    show_search = get_config_value(
+                        "optional_config", "show_search_term")
                     if show_search == "True":
                         em.set_footer(text="Search term: \"" + query + "\"")
                     await ctx.send(content=None, embed=em)

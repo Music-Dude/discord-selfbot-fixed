@@ -7,7 +7,8 @@ from io import BytesIO
 from PIL import Image
 
 
-path, new_dump, delay, x, y, dimx, dimy, fixed = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]
+path, new_dump, delay, x, y, dimx, dimy, fixed = sys.argv[1], sys.argv[
+    2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]
 images = []
 downloaded = []
 total = failures = 0
@@ -28,7 +29,8 @@ for i, image in enumerate(images):
         total += 1
         continue
     finished_status[i] = '-' + finished_status[i]
-    sys.stdout.write('\rStatus: {}% | Downloaded: {} | Checked: {}/{}'.format(int((i / len(images)) * 100), total, i, len(images)))
+    sys.stdout.write('\rStatus: {}% | Downloaded: {} | Checked: {}/{}'.format(
+        int((i / len(images)) * 100), total, i, len(images)))
     sys.stdout.flush()
     if os.path.exists('pause.txt'):
         with open('cogs/utils/urls{}.txt'.format(new_dump), 'w') as fp:
@@ -36,7 +38,8 @@ for i, image in enumerate(images):
                 fp.write(links + '\n')
         with open('cogs/utils/paused{}.txt'.format(new_dump), 'w') as fp:
             fp.write('{}%'.format(int((i / len(images)) * 100)))
-            fp.write('\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(path, new_dump, delay, x, y, dimx, dimy, fixed))
+            fp.write('\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(
+                path, new_dump, delay, x, y, dimx, dimy, fixed))
         os._exit(0)
 
     failed = False
@@ -49,7 +52,8 @@ for i, image in enumerate(images):
             time.sleep(2)
             if i == 2:
                 failed = True
-                sys.stdout.write('\rFailed to retrieve: %s                       ' % image)
+                sys.stdout.write(
+                    '\rFailed to retrieve: %s                       ' % image)
                 sys.stdout.flush()
                 print('\nContinuing...')
                 failures += 1
@@ -83,7 +87,8 @@ for i, image in enumerate(images):
     else:
         continue
     image_url = image.split('/')
-    image_name = "".join([x if x.isalnum() or x == '.' else "_" for x in image_url[-1]])[-25:]
+    image_name = "".join(
+        [x if x.isalnum() or x == '.' else "_" for x in image_url[-1]])[-25:]
     if not image_name.endswith(('.jpg', '.jpeg', '.png', '.gif', '.gifv', '.webm')):
         image_name += '.jpg'
     if os.path.exists('{}image_dump/{}/{}'.format(path, new_dump, image_name)):
@@ -110,7 +115,8 @@ for i, image in enumerate(images):
         total += 1
         finished_status[i] = '+{} {}'.format(image_hash, finished_status[i])
     except:
-        sys.stdout.write('\rUnable to save image to folder: %s                       ' % image)
+        sys.stdout.write(
+            '\rUnable to save image to folder: %s                       ' % image)
         sys.stdout.flush()
         print('\nContinuing...')
         try:
@@ -130,8 +136,10 @@ elif folder_size/1024.0 > 1024:
     size = "%0.1f MB" % (folder_size / (1024 * 1024.0))
 else:
     size = "%0.1f KB" % (folder_size / 1024.0)
-sys.stdout.write('\r100% Done! Downloaded {} items. {}                         \n'.format(total, size))
+sys.stdout.write(
+    '\r100% Done! Downloaded {} items. {}                         \n'.format(total, size))
 sys.stdout.flush()
 
 with open('cogs/utils/finished{}.txt'.format(new_dump), 'w') as fp:
-    fp.write('{}\n{}\n{}\n{}'.format(str(stop), str(total), str(failures), size))
+    fp.write('{}\n{}\n{}\n{}'.format(
+        str(stop), str(total), str(failures), size))

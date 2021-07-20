@@ -45,7 +45,7 @@ class Server(commands.Cog):
                     server = self.bot.get_guild(int(msg))
                     if not server:
                         return await ctx.send(
-                                              self.bot.bot_prefix + 'Server not found.')
+                            self.bot.bot_prefix + 'Server not found.')
                 except:
                     for i in self.bot.guilds:
                         if i.name.lower() == msg.lower():
@@ -66,7 +66,8 @@ class Server(commands.Cog):
             all_users.sort()
             all = '\n'.join(all_users)
 
-            channel_count = len([x for x in server.channels if type(x) == discord.channel.TextChannel])
+            channel_count = len(
+                [x for x in server.channels if type(x) == discord.channel.TextChannel])
 
             role_count = len(server.roles)
             emoji_count = len(server.emojis)
@@ -79,16 +80,21 @@ class Server(commands.Cog):
                 em.add_field(name='Currently Online', value=online)
                 em.add_field(name='Text Channels', value=str(channel_count))
                 em.add_field(name='Region', value=server.region)
-                em.add_field(name='Verification Level', value=str(server.verification_level))
-                em.add_field(name='Highest role', value=server.role_hierarchy[0])
+                em.add_field(name='Verification Level',
+                             value=str(server.verification_level))
+                em.add_field(name='Highest role',
+                             value=server.role_hierarchy[0])
                 em.add_field(name='Number of roles', value=str(role_count))
                 em.add_field(name='Number of emotes', value=str(emoji_count))
                 url = await hastebin(str(all), self.bot.session)
-                hastebin_of_users = '[List of all {} users in this server]({})'.format(server.member_count, url)
+                hastebin_of_users = '[List of all {} users in this server]({})'.format(
+                    server.member_count, url)
                 em.add_field(name='Users', value=hastebin_of_users)
-                em.add_field(name='Created At', value=server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S'))
+                em.add_field(name='Created At', value=server.created_at.__format__(
+                    '%A, %d. %B %Y @ %H:%M:%S'))
                 em.set_thumbnail(url=server.icon_url)
-                em.set_author(name='Server Info', icon_url='https://i.imgur.com/RHagTDg.png')
+                em.set_author(name='Server Info',
+                              icon_url='https://i.imgur.com/RHagTDg.png')
                 em.set_footer(text='Server ID: %s' % server.id)
                 await ctx.send(embed=em)
             else:
@@ -148,20 +154,28 @@ class Server(commands.Cog):
                 em = discord.Embed(title='Role Info', color=role.color)
                 em.add_field(name='Name', value=role.name)
                 em.add_field(name='ID', value=role.id, inline=False)
-                em.add_field(name='Users in this role', value=str(len(role.members)))
-                em.add_field(name='Role color hex value', value=str(role.color))
-                em.add_field(name='Role color RGB value', value=role.color.to_rgb())
+                em.add_field(name='Users in this role',
+                             value=str(len(role.members)))
+                em.add_field(name='Role color hex value',
+                             value=str(role.color))
+                em.add_field(name='Role color RGB value',
+                             value=role.color.to_rgb())
                 em.add_field(name='Mentionable', value=role.mentionable)
                 if len(role.members) > 10:
                     all_users = all_users.replace(', ', '\n')
                     url = await hastebin(str(all_users), self.bot.session)
-                    em.add_field(name='All users', value='{} users. [List of users posted to Hastebin.]({})'.format(len(role.members), url), inline=False)
+                    em.add_field(name='All users', value='{} users. [List of users posted to Hastebin.]({})'.format(
+                        len(role.members), url), inline=False)
                 elif len(role.members) >= 1:
-                    em.add_field(name='All users', value=all_users, inline=False)
+                    em.add_field(name='All users',
+                                 value=all_users, inline=False)
                 else:
-                    em.add_field(name='All users', value='There are no users in this role!', inline=False)
-                em.add_field(name='Created at', value=role.created_at.__format__('%x at %X'))
-                em.set_thumbnail(url='http://www.colorhexa.com/{}.png'.format(str(role.color).strip("#")))
+                    em.add_field(
+                        name='All users', value='There are no users in this role!', inline=False)
+                em.add_field(name='Created at',
+                             value=role.created_at.__format__('%x at %X'))
+                em.set_thumbnail(
+                    url='http://www.colorhexa.com/{}.png'.format(str(role.color).strip("#")))
                 await ctx.message.delete()
                 return await ctx.send(content=None, embed=em)
         await ctx.message.delete()
@@ -179,12 +193,13 @@ class Server(commands.Cog):
             data.description = "**Information about Channel:** " + channel.mention
         if hasattr(channel, 'changed_roles'):
             if len(channel.changed_roles) > 0:
-                data.color = discord.Colour.green() if channel.changed_roles[0].permissions.read_messages else discord.Colour.red()
-        if isinstance(channel, discord.TextChannel): 
+                data.color = discord.Colour.green(
+                ) if channel.changed_roles[0].permissions.read_messages else discord.Colour.red()
+        if isinstance(channel, discord.TextChannel):
             _type = "Text"
-        elif isinstance(channel, discord.VoiceChannel): 
+        elif isinstance(channel, discord.VoiceChannel):
             _type = "Voice"
-        else: 
+        else:
             _type = "Unknown"
         data.add_field(name="Type", value=_type)
         data.add_field(name="ID", value=channel.id, inline=False)
@@ -192,9 +207,11 @@ class Server(commands.Cog):
             data.add_field(name="Position", value=channel.position)
         if isinstance(channel, discord.VoiceChannel):
             if channel.user_limit != 0:
-                data.add_field(name="User Number", value="{}/{}".format(len(channel.voice_members), channel.user_limit))
+                data.add_field(
+                    name="User Number", value="{}/{}".format(len(channel.voice_members), channel.user_limit))
             else:
-                data.add_field(name="User Number", value="{}".format(len(channel.voice_members)))
+                data.add_field(name="User Number", value="{}".format(
+                    len(channel.voice_members)))
             userlist = [r.display_name for r in channel.members]
             if not userlist:
                 userlist = "None"
@@ -208,7 +225,7 @@ class Server(commands.Cog):
                 data.add_field(name="Pins", value=len(pins), inline=True)
             except discord.Forbidden:
                 pass
-            data.add_field(name="Members", value="%s"%len(channel.members))
+            data.add_field(name="Members", value="%s" % len(channel.members))
             if channel.topic:
                 data.add_field(name="Topic", value=channel.topic, inline=False)
             hidden = []
@@ -220,12 +237,15 @@ class Server(commands.Cog):
                 elif role.permissions.read_messages is False:
                     if role.name != "@everyone":
                         hidden.append(role.mention)
-            if len(allowed) > 0: 
-                data.add_field(name='Allowed Roles ({})'.format(len(allowed)), value=', '.join(allowed), inline=False)
+            if len(allowed) > 0:
+                data.add_field(name='Allowed Roles ({})'.format(
+                    len(allowed)), value=', '.join(allowed), inline=False)
             if len(hidden) > 0:
-                data.add_field(name='Restricted Roles ({})'.format(len(hidden)), value=', '.join(hidden), inline=False)
+                data.add_field(name='Restricted Roles ({})'.format(
+                    len(hidden)), value=', '.join(hidden), inline=False)
         if channel.created_at:
-            data.set_footer(text=("Created on {} ({} days ago)".format(channel.created_at.strftime("%d %b %Y %H:%M"), (ctx.message.created_at - channel.created_at).days)))
+            data.set_footer(text=("Created on {} ({} days ago)".format(channel.created_at.strftime(
+                "%d %b %Y %H:%M"), (ctx.message.created_at - channel.created_at).days)))
         await ctx.send(embed=data)
 
     @commands.command(aliases=['invitei', 'ii'], pass_context=True)
@@ -245,17 +265,18 @@ class Server(commands.Cog):
                         url = urlparse(url)
                         if any(x in url for x in self.invite_domains):
                             print(url)
-                            url = url.path.replace('/', '').replace('<', '').replace('>', '').replace('\'', '').replace(')', '')
+                            url = url.path.replace(
+                                '/', '').replace('<', '').replace('>', '').replace('\'', '').replace(')', '')
                             print(url)
                             try:
                                 invite = await self.bot.get_invite(url)
                             except discord.NotFound:
                                 return await ctx.send(self.bot.bot_prefix + "Couldn't find valid invite, please double check the link.")
                             break
-                
+
         if not invite:
             return await ctx.send(self.bot.bot_prefix + "Couldn't find an invite in the last 100 messages. Please specify an invite.")
-        
+
         data = discord.Embed()
         content = None
         if invite.id is not None:
@@ -263,7 +284,8 @@ class Server(commands.Cog):
         if invite.revoked is not None:
             data.colour = discord.Colour.red() if invite.revoked else discord.Colour.green()
         if invite.created_at is not None:
-            data.set_footer(text="Created on {} ({} days ago)".format(invite.created_at.strftime("%d %b %Y %H:%M"), (invite.created_at - invite.created_at).days))
+            data.set_footer(text="Created on {} ({} days ago)".format(invite.created_at.strftime(
+                "%d %b %Y %H:%M"), (invite.created_at - invite.created_at).days))
         if invite.max_age is not None:
             if invite.max_age > 0:
                 expires = '%s s' % invite.max_age
@@ -271,20 +293,26 @@ class Server(commands.Cog):
                 expires = "Never"
             data.add_field(name="Expires in", value=expires)
         if invite.temporary is not None:
-            data.add_field(name="Temp membership", value="Yes" if invite.temporary else "No")
+            data.add_field(name="Temp membership",
+                           value="Yes" if invite.temporary else "No")
         if invite.uses is not None:
-            data.add_field(name="Uses", value="%s / %s" % (invite.uses, invite.max_uses))
+            data.add_field(name="Uses", value="%s / %s" %
+                           (invite.uses, invite.max_uses))
         if invite.inviter.name is not None:
-            data.set_author(name=invite.inviter.name + '#' + invite.inviter.discriminator + " (%s)" % invite.inviter.id, icon_url=invite.inviter.avatar_url)
+            data.set_author(name=invite.inviter.name + '#' + invite.inviter.discriminator +
+                            " (%s)" % invite.inviter.id, icon_url=invite.inviter.avatar_url)
 
         if invite.guild.name is not None:
-            data.add_field(name="Guild", value="Name: " + invite.guild.name + "\nID: %s" % invite.guild.id, inline=False)
+            data.add_field(name="Guild", value="Name: " + invite.guild.name +
+                           "\nID: %s" % invite.guild.id, inline=False)
         if invite.guild.icon_url is not None:
             data.set_thumbnail(url=invite.guild.icon_url)
 
         if invite.channel.name is not None:
-            channel = "%s\n#%s" % (invite.channel.mention, invite.channel.name) if isinstance(invite.channel, discord.TextChannel) else invite.channel.name
-            data.add_field(name="Channel", value="Name: " + channel + "\nID: %s" % invite.channel.id, inline=False)
+            channel = "%s\n#%s" % (invite.channel.mention, invite.channel.name) if isinstance(
+                invite.channel, discord.TextChannel) else invite.channel.name
+            data.add_field(name="Channel", value="Name: " + channel +
+                           "\nID: %s" % invite.channel.id, inline=False)
 
         try:
             await ctx.send(content=content, embed=data)

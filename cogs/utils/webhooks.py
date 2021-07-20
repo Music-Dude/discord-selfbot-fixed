@@ -36,6 +36,7 @@ class WebHookRoute:
 
 class Webhook:
     """Class for interacting with webhooks."""
+
     def __init__(self, bot):
         self.http = bot.http
         self.partialurl = None
@@ -80,16 +81,18 @@ class Webhook:
                 self.payload['embeds'] = self.embeds
             if self.create_form_data:
                 self.form = aiohttp.FormData()
-                self.form.add_field('payload_json', discord.utils.to_json(self.payload))
-                self.form.add_field('file', self.file, filename=filename, content_type='multipart/form-data')
+                self.form.add_field(
+                    'payload_json', discord.utils.to_json(self.payload))
+                self.form.add_field(
+                    'file', self.file, filename=filename, content_type='multipart/form-data')
                 yield from self.http.request(
-                        WebHookRoute(
-                            'POST',
-                            self.partialurl),
-                        data=self.form)
+                    WebHookRoute(
+                        'POST',
+                        self.partialurl),
+                    data=self.form)
             else:
                 yield from self.http.request(
-                        WebHookRoute(
-                            'POST',
-                            self.partialurl),
-                        json=self.payload)
+                    WebHookRoute(
+                        'POST',
+                        self.partialurl),
+                    json=self.payload)

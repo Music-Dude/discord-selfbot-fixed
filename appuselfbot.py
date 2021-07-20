@@ -28,7 +28,9 @@ from collections import namedtuple
 from discord.ext import commands
 
 
-FakeGuild = namedtuple("FakeGuild", ["name", "id", "icon_url", "members", "me", "channels", "emojis"])
+FakeGuild = namedtuple(
+    "FakeGuild", ["name", "id", "icon_url", "members", "me", "channels", "emojis"])
+
 
 def parse_cmd_arguments():  # allows for arguments
     parser = argparse.ArgumentParser(description="Discord-Selfbot")
@@ -69,7 +71,8 @@ except KeyError:
 
 if _test_run:
     try:
-        samples = os.listdir('settings')  # generating the config files from sample while building
+        # generating the config files from sample while building
+        samples = os.listdir('settings')
         for f in samples:
             if f.endswith('sample') and f[:-7] not in samples:
                 with open('settings/%s' % f, 'r', encoding="utf8") as template:
@@ -77,10 +80,12 @@ if _test_run:
                         fields = json.load(template)
                         json.dump(fields, g, sort_keys=True, indent=4)
     except:
-        print('Something when wrong. Check for missing sample files')  # only visible in Travis
+        # only visible in Travis
+        print('Something when wrong. Check for missing sample files')
         pass  # duo to some sample files sometimes missing passing it will make sure nothing goes wrong
     print("Quitting: test run")
     exit(0)
+
 
 def wizard():
     # setup wizard
@@ -121,7 +126,8 @@ def wizard():
     print("-------------------------------------------------------------")
     config["track"] = "y" in input("| ").strip().lower()
 
-    input("\nThis concludes the setup wizard. For further setup options (ex. setting up google image search), refer to the Discord Selfbot wiki.\n\nYour settings:\nInvoke commands with: {cmd}  Ex: {cmd}ping\nInvoke custom commands with: {custom}  Ex: {custom}get good\nYou may restart this wizard at any time by deleting config.json in the settings folder.\n\nPress Enter to start the bot....\n".format(cmd=config["cmd_prefix"], custom=config["customcmd_prefix"]))
+    input("\nThis concludes the setup wizard. For further setup options (ex. setting up google image search), refer to the Discord Selfbot wiki.\n\nYour settings:\nInvoke commands with: {cmd}  Ex: {cmd}ping\nInvoke custom commands with: {custom}  Ex: {custom}get good\nYou may restart this wizard at any time by deleting config.json in the settings folder.\n\nPress Enter to start the bot....\n".format(
+        cmd=config["cmd_prefix"], custom=config["customcmd_prefix"]))
 
     print("Starting up...")
     with open('settings/config.json', encoding='utf-8', mode="w") as f:
@@ -145,7 +151,8 @@ shutdown = False
 if os.name == 'nt':
     try:
         # only windows users with admin privileges can read the C:\windows\temp
-        temp = os.listdir(os.sep.join([os.environ.get('SystemRoot', 'C:\\windows'), 'temp']))
+        temp = os.listdir(os.sep.join(
+            [os.environ.get('SystemRoot', 'C:\\windows'), 'temp']))
     except:
         shutdown = False
     else:
@@ -197,7 +204,8 @@ for f in samples:
                 json.dump(fields, g, sort_keys=True, indent=4)
 
 
-bot = commands.Bot(command_prefix=get_config_value('config', 'cmd_prefix'), description='''Selfbot by Keanu''', self_bot=True)
+bot = commands.Bot(command_prefix=get_config_value(
+    'config', 'cmd_prefix'), description='''Selfbot by Keanu''', self_bot=True)
 
 if __name__ == "__main__":
     _runs_in_loop = False
@@ -218,6 +226,8 @@ if bot.track is None:
     write_config_value("config", "track", bot.track)
 
 # Startup
+
+
 @bot.event
 async def on_ready():
     message = 'logged in as %s' % bot.user
@@ -226,7 +236,7 @@ async def on_ready():
     print(separator)
     try:
         print(message)
-    except: # some bot usernames with special chars fail on shitty platforms
+    except:  # some bot usernames with special chars fail on shitty platforms
         print(message.encode(errors='replace').decode())
     print(uid_message)
     if bot.track:
@@ -234,7 +244,8 @@ async def on_ready():
     print("'unclosed client session' and 'unclosed connector' are not errors")
     print(separator)
 
-    bot.session = aiohttp.ClientSession(loop=bot.loop, headers={"User-Agent": "AppuSelfBot"})
+    bot.session = aiohttp.ClientSession(
+        loop=bot.loop, headers={"User-Agent": "AppuSelfBot"})
 
     bot.uptime = datetime.datetime.now()
     bot.last_error = "No errors to display."
@@ -284,7 +295,8 @@ async def on_ready():
 
     # Dealing with old versions updating
     if not os.path.isfile('settings/fc.json'):
-        data = {"bnet_fc": "", "ds_fc": "", "psn_fc": "", "steam_fc": "", "switch_fc": "", "xbox_fc": ""}
+        data = {"bnet_fc": "", "ds_fc": "", "psn_fc": "",
+                "steam_fc": "", "switch_fc": "", "xbox_fc": ""}
         dataIO.save_json("settings/fc.json", data)
     if not os.path.isfile('settings/replacements.json'):
         data = {":lennyface:": "( ͡° ͜ʖ ͡°)", ":tableflip": "(╯°□°）╯︵ ┻━┻"}
@@ -302,7 +314,8 @@ async def on_ready():
         os.makedirs('avatars')
     if not os.path.isfile('settings/avatars.json'):
         with open('settings/avatars.json', 'w', encoding="utf8") as avis:
-            json.dump({'password': '', 'interval': '0', 'type': 'random'}, avis, indent=4)
+            json.dump({'password': '', 'interval': '0',
+                      'type': 'random'}, avis, indent=4)
     with open('settings/avatars.json', 'r', encoding="utf8") as g:
         avatars = json.load(g)
     bot.avatar_interval = avatars['interval']
@@ -313,7 +326,8 @@ async def on_ready():
         bot.avatar = avi
     if not os.path.isfile('settings/optional_config.json'):
         conf = load_config()
-        o_conf = {'google_api_key': conf['google_api_key'], 'custom_search_engine': conf['custom_search_engine'], 'mal_username': conf['mal_username'], 'mal_password': conf['mal_password']}
+        o_conf = {'google_api_key': conf['google_api_key'], 'custom_search_engine': conf['custom_search_engine'],
+                  'mal_username': conf['mal_username'], 'mal_password': conf['mal_password']}
         with open('settings/optional_config.json', 'w', encoding="utf8") as oc:
             json.dump(o_conf, oc, indent=4)
     with open('settings/optional_config.json', 'r+', encoding="utf8") as fp:
@@ -373,10 +387,12 @@ async def on_ready():
         with open('notifier.txt', 'w', encoding="utf8") as fp:
             fp.write(str(bot.subpro.pid))
 
+
 @bot.event
 async def on_guild_join(guild):
     if "SomethingHost" in guild.name:
         await guild.leave()
+
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -391,7 +407,8 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.errors.BadArgument):
         await ctx.send(bot.bot_prefix + "You have given an invalid argument.")
     else:
-        trace = "".join(traceback.format_exception(type(error), error, error.__traceback__))
+        trace = "".join(traceback.format_exception(
+            type(error), error, error.__traceback__))
         bot.last_error = trace
         if _silent:
             await ctx.send(bot.bot_prefix + "An error occurred with the `{}` command.".format(ctx.command.name))
@@ -405,6 +422,7 @@ async def on_command_error(ctx, error):
 async def token(ctx):
     """Fetches the client token."""
     await ctx.send(bot.http.token)
+
 
 @bot.command(pass_context=True, aliases=['reboot'])
 async def restart(ctx):
@@ -476,10 +494,12 @@ async def update(ctx, msg: str = None):
     else:
         await ctx.send(bot.bot_prefix + 'The bot is up to date.')
 
+
 @bot.command(pass_context=True, aliases=['traceback', 'err'])
 async def error(ctx):
     """Show details of the bot's most recent error."""
     await ctx.send("Most recent exception:\n```\n%s```" % bot.last_error)
+
 
 @bot.command(pass_context=True, aliases=['stop', 'shutdown'])
 async def quit(ctx):
@@ -522,6 +542,8 @@ async def reload(ctx, txt: str = None):
         await ctx.send(bot.bot_prefix + 'Reloaded {} of {} modules.'.format(l, len(utils)))
 
 # On all messages sent (for quick commands, custom commands, and logging messages)
+
+
 @bot.event
 async def on_message(message):
 
@@ -534,11 +556,14 @@ async def on_message(message):
             if message.content.rsplit(">>", 1)[0] != "":
                 if message.content.rsplit(">>", 1)[1].strip().isdigit():
                     if bot.get_channel(int(message.content.rsplit(">>", 1)[1].strip())):
-                        message.content, new_channel = message.content.rsplit(">>", 1)
+                        message.content, new_channel = message.content.rsplit(
+                            ">>", 1)
                         if new_channel.strip().isdigit():
-                            message.channel = bot.get_channel(int(new_channel.strip()))
+                            message.channel = bot.get_channel(
+                                int(new_channel.strip()))
                         elif new_channel.strip() == "" and bot.channel_last[0] != None:
-                            message.channel = bot.get_channel(bot.channel_last[0])
+                            message.channel = bot.get_channel(
+                                bot.channel_last[0])
 
         if hasattr(bot, 'channel_last'):
             if message.channel and message.channel.id not in bot.channel_last:
@@ -555,7 +580,8 @@ async def on_message(message):
         if hasattr(bot, 'self_log'):
             try:
                 if str(message.channel.id) not in bot.self_log:
-                    bot.self_log[str(message.channel.id)] = collections.deque(maxlen=100)
+                    bot.self_log[str(message.channel.id)
+                                 ] = collections.deque(maxlen=100)
             except AttributeError:
                 return
             bot.self_log[str(message.channel.id)].append(message)
@@ -567,7 +593,8 @@ async def on_message(message):
                         if response[0] == 'embed' and embed_perms(message):
                             try:
                                 if get_config_value('optional_config', 'customcmd_color'):
-                                    color = int('0x' + get_config_value('optional_config', 'customcmd_color'), 16)
+                                    color = int(
+                                        '0x' + get_config_value('optional_config', 'customcmd_color'), 16)
                                     await message.channel.send(content=None, embed=discord.Embed(colour=color).set_image(url=response[1]))
                                 else:
                                     await message.channel.send(content=None, embed=discord.Embed().set_image(url=response[1]))
@@ -615,7 +642,8 @@ async def on_message(message):
                                 continue
                         if word.startswith('[isolated]'):
                             word = word[10:].lower()
-                            found = re.findall(r'\b' + re.escape(word) + r'\b', message.content.lower())
+                            found = re.findall(
+                                r'\b' + re.escape(word) + r'\b', message.content.lower())
                             if found:
                                 word_found = True
                                 break
@@ -642,14 +670,16 @@ async def on_message(message):
             user_found = False
             if bot.log_conf['user_logging'] == 'on':
                 if '{} {}'.format(str(message.author.id), str(message.guild.id)) in bot.log_conf['keyusers']:
-                    user = '{} {}'.format(str(message.author.id), str(message.guild.id))
+                    user = '{} {}'.format(
+                        str(message.author.id), str(message.guild.id))
                     cd_active, user_p = user_post(bot.key_users, user)
                     if cd_active:
                         bot.log_conf['keyusers'][user] = bot.key_users[user] = user_p
                         user_found = message.author.name
 
                 elif '{} all'.format(str(message.author.id)) in bot.log_conf['keyusers']:
-                    user = '{} all'.format(str(message.author.id), str(message.guild.id))
+                    user = '{} all'.format(
+                        str(message.author.id), str(message.guild.id))
                     cd_active, user_p = user_post(bot.key_users, user)
                     if cd_active:
                         bot.log_conf['keyusers'][user] = bot.key_users[user] = user_p
@@ -670,7 +700,8 @@ async def on_message(message):
                     total_context = 0
                     try:
                         for i in range(1, min(int(bot.log_conf['context_len']), len(bot.all_log[str(message.channel.id) + ' ' + str(message.guild.id)]))):
-                            context.append(bot.all_log[str(message.channel.id) + ' ' + str(message.guild.id)][len(bot.all_log[str(message.channel.id) + ' ' + str(message.guild.id)])-i-1])
+                            context.append(bot.all_log[str(message.channel.id) + ' ' + str(message.guild.id)][len(
+                                bot.all_log[str(message.channel.id) + ' ' + str(message.guild.id)])-i-1])
                             total_context += 1
                     except IndexError:  # This usually means that the bot's internal log has not been sufficiently populated yet
                         pass
@@ -678,20 +709,26 @@ async def on_message(message):
                     for i in range(0, total_context):
                         temp = context[len(context)-i-1][0]
                         if temp.clean_content:
-                            msg += 'User: %s | %s\n' % (temp.author.name, temp.created_at.replace(tzinfo=timezone.utc).astimezone(tz=None).__format__('%x @ %X')) + temp.clean_content.replace('`', '') + '\n\n'
-                    msg += 'User: %s | %s\n' % (message.author.name, message.created_at.replace(tzinfo=timezone.utc).astimezone(tz=None).__format__('%x @ %X')) + message.clean_content.replace('`', '')
+                            msg += 'User: %s | %s\n' % (temp.author.name, temp.created_at.replace(tzinfo=timezone.utc).astimezone(
+                                tz=None).__format__('%x @ %X')) + temp.clean_content.replace('`', '') + '\n\n'
+                    msg += 'User: %s | %s\n' % (message.author.name, message.created_at.replace(
+                        tzinfo=timezone.utc).astimezone(tz=None).__format__('%x @ %X')) + message.clean_content.replace('`', '')
                     part = int(math.ceil(len(msg) / 1950))
                     if user_found:
                         title = '%s posted' % user_found
                     else:
-                        title = '%s mentioned: %s' % (message.author.name, word)
+                        title = '%s mentioned: %s' % (
+                            message.author.name, word)
                     if part == 1:
-                        em = discord.Embed(timestamp=message.created_at, color=0xbc0b0b, title=title, description='Server: ``%s``\nChannel: <#%s> | %s\n\n**Context:**' % (str(message.guild), str(message.channel.id), message.channel.name))
+                        em = discord.Embed(timestamp=message.created_at, color=0xbc0b0b, title=title, description='Server: ``%s``\nChannel: <#%s> | %s\n\n**Context:**' % (
+                            str(message.guild), str(message.channel.id), message.channel.name))
                         while context:
                             temp = context.pop()
                             if temp[0].clean_content:
-                                em.add_field(name='%s' % temp[0].author.name, value=temp[0].clean_content, inline=False)
-                        em.add_field(name='%s' % message.author.name, value=message.clean_content, inline=False)
+                                em.add_field(
+                                    name='%s' % temp[0].author.name, value=temp[0].clean_content, inline=False)
+                        em.add_field(name='%s' % message.author.name,
+                                     value=message.clean_content, inline=False)
                         try:
                             em.set_thumbnail(url=message.author.avatar_url)
                         except:
@@ -703,7 +740,8 @@ async def on_message(message):
                         else:
                             await guild.get_channel(int(location[0])).send(embed=em)
                     else:
-                        split_list = [msg[i:i + 1950] for i in range(0, len(msg), 1950)]
+                        split_list = [msg[i:i + 1950]
+                                      for i in range(0, len(msg), 1950)]
                         all_words = []
                         split_msg = ''
                         for i, blocks in enumerate(split_list):
@@ -736,7 +774,6 @@ async def on_message(message):
         except (AttributeError, discord.errors.HTTPException):
             pass
 
-
     await bot.process_commands(message)
 
 
@@ -744,10 +781,13 @@ def add_alllog(channel, guild, message):
     if not hasattr(bot, 'all_log'):
         bot.all_log = {}
     if channel + ' ' + guild in bot.all_log:
-        bot.all_log[channel + ' ' + guild].append((message, message.clean_content))
+        bot.all_log[channel + ' ' +
+                    guild].append((message, message.clean_content))
     else:
-        bot.all_log[channel + ' ' + guild] = collections.deque(maxlen=int(get_config_value('log', 'log_size', 25)))
-        bot.all_log[channel + ' ' + guild].append((message, message.clean_content))
+        bot.all_log[channel + ' ' + guild] = collections.deque(
+            maxlen=int(get_config_value('log', 'log_size', 25)))
+        bot.all_log[channel + ' ' +
+                    guild].append((message, message.clean_content))
 
 
 def remove_alllog(channel, guild):
@@ -776,6 +816,8 @@ async def webhook(keyword_content, send_type, is_separate):
             await request_webhook('/{}/{}'.format(channel, token), content=keyword_content, embeds=None)
 
 # Set/cycle game
+
+
 async def game_and_avatar(bot):
     await bot.wait_until_ready()
     current_game = next_game = current_avatar = next_avatar = 0
@@ -786,20 +828,23 @@ async def game_and_avatar(bot):
             if hasattr(bot, 'game_time') and hasattr(bot, 'game'):
                 if bot.game:
                     if bot.game_interval:
-                        game_check = game_time_check(bot.game_time, bot.game_interval)
+                        game_check = game_time_check(
+                            bot.game_time, bot.game_interval)
                         if game_check:
                             bot.game_time = game_check
                             with open('settings/games.json', encoding="utf8") as g:
                                 games = json.load(g)
                             if games['type'] == 'random':
                                 while next_game == current_game:
-                                    next_game = random.randint(0, len(games['games']) - 1)
+                                    next_game = random.randint(
+                                        0, len(games['games']) - 1)
                                 current_game = next_game
                                 bot.game = games['games'][next_game]
                                 if bot.is_stream and '=' in games['games'][next_game]:
-                                    g, url = games['games'][next_game].split('=')
+                                    g, url = games['games'][next_game].split(
+                                        '=')
                                     await bot.change_presence(activity=discord.Streaming(name=g,
-                                                                                url=url),
+                                                                                         url=url),
                                                               status=set_status(bot), afk=True)
                                 else:
                                     await bot.change_presence(activity=discord.Activity(name=games['games'][next_game], type=bot.status_type), status=set_status(bot), afk=True)
@@ -810,7 +855,8 @@ async def game_and_avatar(bot):
                                     next_game += 1
                                 bot.game = games['games'][next_game]
                                 if bot.is_stream and '=' in games['games'][next_game]:
-                                    g, url = games['games'][next_game].split('=')
+                                    g, url = games['games'][next_game].split(
+                                        '=')
                                     await bot.change_presence(activity=discord.Streaming(name=g, url=url), status=set_status(bot), afk=True)
                                 else:
                                     await bot.change_presence(activity=discord.Activity(name=games['games'][next_game], type=bot.status_type), status=set_status(bot), afk=True)
@@ -833,7 +879,8 @@ async def game_and_avatar(bot):
             if hasattr(bot, 'avatar_time') and hasattr(bot, 'avatar'):
                 if bot.avatar:
                     if bot.avatar_interval:
-                        avi_check = avatar_time_check(bot.avatar_time, bot.avatar_interval)
+                        avi_check = avatar_time_check(
+                            bot.avatar_time, bot.avatar_interval)
                         if avi_check:
                             bot.avatar_time = avi_check
                             with open('settings/avatars.json', encoding="utf8") as g:
@@ -842,7 +889,8 @@ async def game_and_avatar(bot):
                             all_avis.sort()
                             if avi_config['type'] == 'random':
                                 while next_avatar == current_avatar:
-                                    next_avatar = random.randint(0, len(all_avis) - 1)
+                                    next_avatar = random.randint(
+                                        0, len(all_avis) - 1)
                                 current_avatar = next_avatar
                                 bot.avatar = all_avis[next_avatar]
                                 with open('avatars/%s' % bot.avatar, 'rb') as fp:
@@ -892,7 +940,8 @@ if __name__ == '__main__':
                    "For more info on what they are, how they can be accessed and downloaded, and how you can make one too, go here: https://github.com/appu1232/Discord-Selfbot/wiki/Other-Add-ons"
             with open("custom_cogs/what_is_this.txt", 'w') as fp:
                 fp.write(text)
-            site = requests.get('https://github.com/LyricLy/ASCII/tree/master/cogs').text
+            site = requests.get(
+                'https://github.com/LyricLy/ASCII/tree/master/cogs').text
             soup = BeautifulSoup(site, "html.parser")
             data = soup.find_all(attrs={"class": "js-navigation-open"})
             list = []
@@ -900,25 +949,31 @@ if __name__ == '__main__':
                 list.append(a.get("title"))
             for cog in list[2:]:
                 for entry in list[2:]:
-                    response = requests.get("http://appucogs.tk/cogs/{}".format(entry))
+                    response = requests.get(
+                        "http://appucogs.tk/cogs/{}".format(entry))
                     found_cog = response.json()
-                    filename = found_cog["link"].rsplit("/", 1)[1].rsplit(".", 1)[0]
+                    filename = found_cog["link"].rsplit(
+                        "/", 1)[1].rsplit(".", 1)[0]
                     if os.path.isfile("cogs/" + filename + ".py"):
-                        os.rename("cogs/" + filename + ".py", "custom_cogs/" + filename + ".py")
+                        os.rename("cogs/" + filename + ".py",
+                                  "custom_cogs/" + filename + ".py")
         except Exception as e:
-            print("Failed to transfer custom cogs to custom_cogs folder. Error: %s" % str(e))
+            print(
+                "Failed to transfer custom cogs to custom_cogs folder. Error: %s" % str(e))
     for extension in os.listdir("cogs"):
         if extension.endswith('.py'):
             try:
                 bot.load_extension("cogs." + extension[:-3])
             except Exception as e:
-                print('Failed to load extension {}\n{}: {}'.format(extension, type(e).__name__, e))
+                print('Failed to load extension {}\n{}: {}'.format(
+                    extension, type(e).__name__, e))
     for extension in os.listdir("custom_cogs"):
         if extension.endswith('.py'):
             try:
                 bot.load_extension("custom_cogs." + extension[:-3])
             except Exception as e:
-                print('Failed to load extension {}\n{}: {}'.format(extension, type(e).__name__, e))
+                print('Failed to load extension {}\n{}: {}'.format(
+                    extension, type(e).__name__, e))
 
     sys.stderr = err
     bot.loop.create_task(game_and_avatar(bot))
@@ -936,7 +991,8 @@ if __name__ == '__main__':
                     print('Cannot use setup Wizard becaue of silent mode')
                     exit(0)
                 print("It seems the token you entered is incorrect or has changed. If you changed your password or enabled/disabled 2fa, your token will change. Grab your new token. Here's how you do it:\n")
-                print("Go into your Discord window and press Ctrl+Shift+I (Ctrl+Opt+I can also work on macOS)")
+                print(
+                    "Go into your Discord window and press Ctrl+Shift+I (Ctrl+Opt+I can also work on macOS)")
                 print("Then, go into the Applications tab (you may have to click the arrow at the top right to get there), expand the 'Local Storage' dropdown, select discordapp, and then grab the token value at the bottom. Here's how it looks: https://imgur.com/h3g9uf6")
                 print("Paste the contents of that entry below.")
                 print("-------------------------------------------------------------")

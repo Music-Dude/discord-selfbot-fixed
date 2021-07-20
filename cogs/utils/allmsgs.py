@@ -2,7 +2,8 @@ import mimetypes
 from random import randint
 from cogs.utils.dataIO import dataIO
 
-quick = [('shrug', '¯\_(ツ)_/¯'), ('flip', '(╯°□°）╯︵ ┻━┻'), ('unflip', '┬─┬﻿ ノ( ゜-゜ノ)'), ('lenny', '( ͡° ͜ʖ ͡°)'), ('comeatmebro', '(ง’̀-‘́)ง')]
+quick = [('shrug', '¯\_(ツ)_/¯'), ('flip', '(╯°□°）╯︵ ┻━┻'), ('unflip',
+                                                            '┬─┬﻿ ノ( ゜-゜ノ)'), ('lenny', '( ͡° ͜ʖ ͡°)'), ('comeatmebro', '(ง’̀-‘́)ง')]
 
 
 # Quick cmds for da memes
@@ -20,7 +21,7 @@ def custom(message):
     config = dataIO.load_json('settings/config.json')
     customcmd_prefix_len = len(config['customcmd_prefix'])
     if message.startswith(config['customcmd_prefix']):
-        commands =  dataIO.load_json('settings/commands.json')
+        commands = dataIO.load_json('settings/commands.json')
         found_cmds = {}
         for i in commands:
             if message[customcmd_prefix_len:].lower().startswith(i.lower()):
@@ -34,14 +35,16 @@ def custom(message):
                 try:
                     # If index from list is specified, get that result.
                     if message[len(match) + customcmd_prefix_len:].isdigit():
-                        index = int(message.content[len(match) + customcmd_prefix_len:].strip())
+                        index = int(
+                            message.content[len(match) + customcmd_prefix_len:].strip())
                     else:
                         title = message[len(match) + customcmd_prefix_len:]
                         for b, j in enumerate(commands[match]):
                             if j[0].lower() == title.lower().strip():
                                 index = int(b)
                                 break
-                    mimetype, encoding = mimetypes.guess_type(commands[match][index][1])
+                    mimetype, encoding = mimetypes.guess_type(
+                        commands[match][index][1])
 
                     # If value is an image, send as embed
                     if mimetype and mimetype.startswith('image'):
@@ -52,7 +55,8 @@ def custom(message):
 
                     # If the index is not specified, get a random index from list
                     index = randint(0, len(commands[match]) - 1)
-                    mimetype, encoding = mimetypes.guess_type(commands[match][index][1])
+                    mimetype, encoding = mimetypes.guess_type(
+                        commands[match][index][1])
 
                     # If value is an image, send as embed
                     if mimetype and mimetype.startswith('image'):

@@ -24,7 +24,7 @@ class Todo(commands.Cog):
 
     def save_list(self):
         dataIO.save_json("settings/todo.json", self.todo_list)
-        
+
     # don't like to do this but the one from appuselfbot.py is slightly different to my needs
     async def webhook(self, entry, send_type):
         temp = self.bot.log_conf['webhook_url'].split('/')
@@ -32,7 +32,8 @@ class Todo(commands.Cog):
         token = temp[len(temp) - 1]
         webhook_class = Webhook(self.bot)
         request_webhook = webhook_class.request_webhook
-        em = discord.Embed(title='Timer Alert', color=0x4e42f4, description='Timer for item: **%s** just ran out.' % entry)
+        em = discord.Embed(title='Timer Alert', color=0x4e42f4,
+                           description='Timer for item: **%s** just ran out.' % entry)
         if 'ping' in send_type:
             await request_webhook('/{}/{}'.format(channel, token), embeds=[em.to_dict()], content=self.bot.user.mention)
         else:
@@ -74,8 +75,10 @@ class Todo(commands.Cog):
             if not self.todo_list:
                 await ctx.send(self.bot.bot_prefix + "Your to-do list is empty!")
             else:
-                embed = discord.Embed(title="{}'s to-do list:".format(ctx.message.author.name), description="")
-                sorted_items = sorted(self.todo_list.items(), key=lambda x: x[1][0] if type(x[1][0]) is float else 0)
+                embed = discord.Embed(
+                    title="{}'s to-do list:".format(ctx.message.author.name), description="")
+                sorted_items = sorted(self.todo_list.items(
+                ), key=lambda x: x[1][0] if type(x[1][0]) is float else 0)
                 sorted_keys = [item[0] for item in sorted_items]
 
                 description = ''
@@ -86,49 +89,60 @@ class Todo(commands.Cog):
                     if self.todo_list[entry][0] == "none":
                         embed.description += "\u2022 {}\n".format(entry)
                     elif self.todo_list[entry][0] == "done":
-                        embed.description += "\u2022 {} - time's up!\n".format(entry)
+                        embed.description += "\u2022 {} - time's up!\n".format(
+                            entry)
                     else:
-                        m, s = divmod(self.todo_list[entry][0]-current_time(), 60)
+                        m, s = divmod(
+                            self.todo_list[entry][0]-current_time(), 60)
                         h, m = divmod(m, 60)
                         d, h = divmod(h, 24)
-                        embed.description += "\u2022 {} - time left: {}\n".format(entry, "%02d:%02d:%02d:%02d" % (int(d), int(h), int(m), int(s)))
+                        embed.description += "\u2022 {} - time left: {}\n".format(
+                            entry, "%02d:%02d:%02d:%02d" % (int(d), int(h), int(m), int(s)))
                         if entry[1] != 0:
                             if self.todo_list[entry][2] != 0:
                                 channels = []
                                 if type(self.todo_list[entry][2]) is str:
-                                    channel = self.bot.get_channel(int(self.todo_list[entry][2]))
+                                    channel = self.bot.get_channel(
+                                        int(self.todo_list[entry][2]))
                                     channels.append(channel)
                                 else:
                                     for channel in self.todo_list[entry][2]:
-                                        chnl = self.bot.get_channel(int(channel.strip()))
+                                        chnl = self.bot.get_channel(
+                                            int(channel.strip()))
                                         channels.append(chnl)
                                 for channel in channels:
                                     if channel:
-                                        embed.description += '    - Send to channel: #%s \n' % str(channel)
+                                        embed.description += '    - Send to channel: #%s \n' % str(
+                                            channel)
                                     else:
                                         embed.description += '    - Send to channel: Could not find channel. Message will not be sent.\n'
                             m, s = divmod(self.todo_list[entry][5], 60)
                             h, m = divmod(m, 60)
                             d, h = divmod(h, 24)
                             if self.todo_list[entry][4] == 'on':
-                                repeat = 'every {}'.format('%02d:%02d:%02d:%02d \n' % (int(d), int(h), int(m), int(s)))
+                                repeat = 'every {}'.format(
+                                    '%02d:%02d:%02d:%02d \n' % (int(d), int(h), int(m), int(s)))
                                 embed.description += '    - Repeat: %s' % repeat
                             elif self.todo_list[entry][4] != 0:
-                                repeat = '{} more time(s) every {} \n'.format(self.todo_list[entry][4], "%02d:%02d:%02d:%02d" % (int(d), int(h), int(m), int(s)))
+                                repeat = '{} more time(s) every {} \n'.format(
+                                    self.todo_list[entry][4], "%02d:%02d:%02d:%02d" % (int(d), int(h), int(m), int(s)))
                                 embed.description += '    - Repeat: %s' % repeat
 
                         else:
-                            embed.description += "\u2022 {} - time left: {}\n".format(entry, "%02d:%02d:%02d:%02d" % (int(d), int(h), int(m), int(s)))
+                            embed.description += "\u2022 {} - time left: {}\n".format(
+                                entry, "%02d:%02d:%02d:%02d" % (int(d), int(h), int(m), int(s)))
 
                     if len(embed.description + description) > 2000:
                         all_entries.append(embed)
-                        embed = discord.Embed(title="{}'s to-do list:".format(ctx.message.author.name), description="")
+                        embed = discord.Embed(
+                            title="{}'s to-do list:".format(ctx.message.author.name), description="")
                         embed.description = description
 
                 all_entries.append(embed)
                 for count, embed in enumerate(all_entries):
                     if len(all_entries) > 1:
-                        embed.title = "{}'s to-do list ({}/{}):".format(ctx.message.author.name.format(), count+1, len(all_entries))
+                        embed.title = "{}'s to-do list ({}/{}):".format(
+                            ctx.message.author.name.format(), count+1, len(all_entries))
                     await ctx.send("", embed=embed)
 
     @todo.command(pass_context=True)
@@ -191,7 +205,8 @@ class Todo(commands.Cog):
                     alert = False
                 time = seconds-current_time()
 
-            self.todo_list[msg[0]] = [seconds, text, channel, alert, repeat, time]
+            self.todo_list[msg[0]] = [
+                seconds, text, channel, alert, repeat, time]
         else:
             self.todo_list[msg] = [seconds, text, channel, alert, repeat, time]
         self.save_list()
@@ -228,9 +243,11 @@ class Todo(commands.Cog):
                         self.todo_list[entry][0] = "done"
 
                         if self.todo_list[entry][4] == 'on':
-                            self.todo_list[entry][0] = current_time() + self.todo_list[entry][5]
+                            self.todo_list[entry][0] = current_time(
+                            ) + self.todo_list[entry][5]
                         elif self.todo_list[entry][4] != 0:
-                            self.todo_list[entry][0] = current_time() + self.todo_list[entry][5]
+                            self.todo_list[entry][0] = current_time(
+                            ) + self.todo_list[entry][5]
                             self.todo_list[entry][4] = self.todo_list[entry][4]-1
                         else:
                             self.todo_list[entry][0] = "done"
@@ -238,13 +255,16 @@ class Todo(commands.Cog):
                             if self.todo_list[entry][2] != 0:
                                 if type(self.todo_list[entry][2]) is list:
                                     for channel in self.todo_list[entry][2]:
-                                        chnl = self.bot.get_channel(int(channel.strip()))
+                                        chnl = self.bot.get_channel(
+                                            int(channel.strip()))
                                         await chnl.send(self.todo_list[entry][1])
                                 else:
-                                    channel = self.bot.get_channel(int(self.todo_list[entry][2]))
+                                    channel = self.bot.get_channel(
+                                        int(self.todo_list[entry][2]))
                                     await channel.send(self.todo_list[entry][1])
                         except:
-                            print('Unable to send message for todo list entry: %s' % entry)
+                            print(
+                                'Unable to send message for todo list entry: %s' % entry)
 
                         self.save_list()
 
@@ -254,7 +274,8 @@ class Todo(commands.Cog):
                             elif self.bot.notify['type'] == 'ping':
                                 await self.webhook(entry, 'ping')
                             else:
-                                location = self.bot.log_conf['log_location'].split()
+                                location = self.bot.log_conf['log_location'].split(
+                                )
                                 guild = self.bot.get_guild(int(location[1]))
                                 em = discord.Embed(title='Timer Alert', color=0x4e42f4,
                                                    description='Timer for item: **%s** just ran out.' % entry)

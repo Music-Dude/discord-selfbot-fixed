@@ -36,8 +36,8 @@ def load_moderation():
 # @common.deprecation_warn()
 def load_notify_config():
     with open('settings/notify.json', 'r') as f:
-        return json.load(f)  
-    
+        return json.load(f)
+
 
 # @common.deprecation_warn()
 def load_log_config():
@@ -100,23 +100,32 @@ def update_bot(message):
         if message is False:
             version = 4
         else:
-            version = g.execute(["git", "rev-list", "--right-only", "--count", "{0}...origin/{0}".format(branch)])
+            version = g.execute(
+                ["git", "rev-list", "--right-only", "--count", "{0}...origin/{0}".format(branch)])
         version = description = str(int(version))
         if int(version) > 4:
             version = "4"
-        commits = g.execute(["git", "rev-list", "--max-count={0}".format(version), "origin/{0}".format(branch)])
+        commits = g.execute(
+            ["git", "rev-list", "--max-count={0}".format(version), "origin/{0}".format(branch)])
         commits = commits.split('\n')
-        em = discord.Embed(color=0x24292E, title='Latest changes for the selfbot:', description='{0} release(s) behind.'.format(description))
+        em = discord.Embed(color=0x24292E, title='Latest changes for the selfbot:',
+                           description='{0} release(s) behind.'.format(description))
         for i in range(int(version)):
             i = i - 1  # Change i to i -1 to let the formatters below work
-            title = g.execute(["git", "log", "--format=%ar", "-n", "1", commits[i]])
-            field = g.execute(["git", "log", "--pretty=oneline", "--abbrev-commit", "--shortstat", commits[i], "^{0}".format(commits[i + 1])])
+            title = g.execute(
+                ["git", "log", "--format=%ar", "-n", "1", commits[i]])
+            field = g.execute(["git", "log", "--pretty=oneline", "--abbrev-commit",
+                              "--shortstat", commits[i], "^{0}".format(commits[i + 1])])
             field = field[8:].strip()
             link = 'https://github.com/keanuplayz/discord-selfbot-fixed/commit/%s' % commits[i]
-            em.add_field(name=title, value='{0}\n[Code changes]({1})'.format(field, link), inline=False)
-        em.set_thumbnail(url='https://image.flaticon.com/icons/png/512/25/25231.png')
-        em.set_footer(text='Full project: https://github.com/keanuplayz/discord-selfbot-fixed')
+            em.add_field(name=title, value='{0}\n[Code changes]({1})'.format(
+                field, link), inline=False)
+        em.set_thumbnail(
+            url='https://image.flaticon.com/icons/png/512/25/25231.png')
+        em.set_footer(
+            text='Full project: https://github.com/keanuplayz/discord-selfbot-fixed')
         return em
+
 
 def cmd_prefix_len():
     config = load_config()

@@ -4,6 +4,7 @@ import sys
 
 list_of_ids = sys.argv[1:]
 
+
 async def find_chars(all_ids):
     tok = tokage.Client()
 

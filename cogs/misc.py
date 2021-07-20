@@ -32,9 +32,13 @@ class Misc(commands.Cog):
                                            '- Server info commands\n- Quoting, calculator, creating polls, and much more')
             em.add_field(name='\ud83d\udd17 Link to download',
                          value='[Github link](https://github.com/keanuplayz/discord-selfbot-fixed/tree/master)')
-            em.add_field(name='\ud83c\udfa5Quick examples:', value='[Simple commands](http://i.imgur.com/3H9zpop.gif)')
-            if txt == 'link': em.add_field(name='👋 Discord Server', value='Join the official Discord server [here](https://discord.gg/FGnM5DM)!')
-            em.set_footer(text='Made by Keanu#2871', icon_url='https://i.imgur.com/RHagTDg.png')
+            em.add_field(name='\ud83c\udfa5Quick examples:',
+                         value='[Simple commands](http://i.imgur.com/3H9zpop.gif)')
+            if txt == 'link':
+                em.add_field(name='👋 Discord Server',
+                             value='Join the official Discord server [here](https://discord.gg/FGnM5DM)!')
+            em.set_footer(text='Made by Keanu#2871',
+                          icon_url='https://i.imgur.com/RHagTDg.png')
             await ctx.send(content=None, embed=em)
         else:
             await ctx.send('https://github.com/keanuplayz/discord-selfbot-fixed')
@@ -48,9 +52,11 @@ class Misc(commands.Cog):
         minutes, seconds = divmod(rem, 60)
         days, hours = divmod(hours, 24)
         if days:
-            time = '%s days, %s hours, %s minutes, and %s seconds' % (days, hours, minutes, seconds)
+            time = '%s days, %s hours, %s minutes, and %s seconds' % (
+                days, hours, minutes, seconds)
         else:
-            time = '%s hours, %s minutes, and %s seconds' % (hours, minutes, seconds)
+            time = '%s hours, %s minutes, and %s seconds' % (
+                hours, minutes, seconds)
         game = self.bot.game
         if not game:
             game = 'None'
@@ -60,34 +66,48 @@ class Misc(commands.Cog):
         if not self.bot.command_count:
             most_used_cmd = 'Not enough info'
         else:
-            cmd_name = max(self.bot.command_count, key=self.bot.command_count.get)
+            cmd_name = max(self.bot.command_count,
+                           key=self.bot.command_count.get)
             total_usage = self.bot.command_count[str(cmd_name)]
             plural = '' if total_usage == 1 else 's'
-            most_used_cmd = '{} - {} use{}'.format(cmd_name, total_usage, plural)
+            most_used_cmd = '{} - {} use{}'.format(
+                cmd_name, total_usage, plural)
         if embed_perms(ctx.message):
             em = discord.Embed(title='Bot Stats', color=0x32441c)
             em.add_field(name=u'\U0001F553 Uptime', value=time, inline=False)
-            em.add_field(name=u'\u2328 Most Used Cmd', value=most_used_cmd, inline=False)
-            em.add_field(name=u'\U0001F4E4 Msgs sent', value=str(self.bot.icount))
-            em.add_field(name=u'\U0001F4E5 Msgs received', value=str(self.bot.message_count))
-            em.add_field(name=u'\u2757 Mentions', value=str(self.bot.mention_count))
-            em.add_field(name=u'\u2694 Servers', value=str(len(self.bot.guilds)))
-            em.add_field(name=u'\ud83d\udcd1 Channels', value=str(channel_count))
-            em.add_field(name=u'\u270F Keywords logged', value=str(self.bot.keyword_log))
+            em.add_field(name=u'\u2328 Most Used Cmd',
+                         value=most_used_cmd, inline=False)
+            em.add_field(name=u'\U0001F4E4 Msgs sent',
+                         value=str(self.bot.icount))
+            em.add_field(name=u'\U0001F4E5 Msgs received',
+                         value=str(self.bot.message_count))
+            em.add_field(name=u'\u2757 Mentions',
+                         value=str(self.bot.mention_count))
+            em.add_field(name=u'\u2694 Servers',
+                         value=str(len(self.bot.guilds)))
+            em.add_field(name=u'\ud83d\udcd1 Channels',
+                         value=str(channel_count))
+            em.add_field(name=u'\u270F Keywords logged',
+                         value=str(self.bot.keyword_log))
             g = u'\U0001F3AE Game'
-            if '=' in game: g = '\ud83c\udfa5 Stream'
+            if '=' in game:
+                g = '\ud83c\udfa5 Stream'
             em.add_field(name=g, value=game)
             try:
-                mem_usage = '{:.2f} MiB'.format(__import__('psutil').Process().memory_full_info().uss / 1024 ** 2)
+                mem_usage = '{:.2f} MiB'.format(__import__(
+                    'psutil').Process().memory_full_info().uss / 1024 ** 2)
             except AttributeError:
                 # OS doesn't support retrieval of USS (probably BSD or Solaris)
-                mem_usage = '{:.2f} MiB'.format(__import__('psutil').Process().memory_full_info().rss / 1024 ** 2)
+                mem_usage = '{:.2f} MiB'.format(__import__(
+                    'psutil').Process().memory_full_info().rss / 1024 ** 2)
             em.add_field(name=u'\U0001F4BE Memory usage:', value=mem_usage)
             try:
                 g = git.cmd.Git(working_dir=os.getcwd())
-                branch = g.execute(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+                branch = g.execute(
+                    ["git", "rev-parse", "--abbrev-ref", "HEAD"])
                 g.execute(["git", "fetch", "origin", branch])
-                version = g.execute(["git", "rev-list", "--right-only", "--count", "{}...origin/{}".format(branch, branch)])
+                version = g.execute(
+                    ["git", "rev-list", "--right-only", "--count", "{}...origin/{}".format(branch, branch)])
                 if branch == "master":
                     branch_note = "."
                 else:
@@ -100,17 +120,20 @@ class Misc(commands.Cog):
                          "origin/%s" % branch])
                     haste_latest = await hastebin(latest, self.bot.session)
                     if version == '1':
-                        status = 'Behind by 1 release%s [Latest update.](%s)' % (branch_note, haste_latest)
+                        status = 'Behind by 1 release%s [Latest update.](%s)' % (
+                            branch_note, haste_latest)
                     else:
-                        status = '%s releases behind%s [Latest updates.](%s)' % (version, branch_note, haste_latest)
+                        status = '%s releases behind%s [Latest updates.](%s)' % (
+                            version, branch_note, haste_latest)
                 em.add_field(name=u'\U0001f4bb Update status:', value=status)
             except:
                 pass
             await ctx.send(content=None, embed=em)
         else:
             msg = '**Bot Stats:** ```Uptime: %s\nMessages Sent: %s\nMessages Received: %s\nMentions: %s\nguilds: %s\nKeywords logged: %s\nGame: %s```' % (
-            time, str(self.bot.icount), str(self.bot.message_count), str(self.bot.mention_count),
-            str(len(self.bot.guilds)), str(self.bot.keyword_log), game)
+                time, str(self.bot.icount), str(
+                    self.bot.message_count), str(self.bot.mention_count),
+                str(len(self.bot.guilds)), str(self.bot.keyword_log), game)
             await ctx.send(self.bot.bot_prefix + msg)
         await ctx.message.delete()
 
@@ -190,33 +213,39 @@ class Misc(commands.Cog):
                 if ptext is title is description is image is thumbnail is color is footer is author is None and 'field=' not in msg:
                     await ctx.message.delete()
                     return await ctx.send(content=None,
-                                                       embed=discord.Embed(description=msg))
+                                          embed=discord.Embed(description=msg))
 
                 if color:
-                    em = discord.Embed(timestamp=timestamp, title=title, description=description, color=int(color, 16))
+                    em = discord.Embed(
+                        timestamp=timestamp, title=title, description=description, color=int(color, 16))
                 else:
-                    em = discord.Embed(timestamp=timestamp, title=title, description=description)
+                    em = discord.Embed(timestamp=timestamp,
+                                       title=title, description=description)
                 for i in embed_values:
                     if i.strip().lower().startswith('field='):
                         field_inline = True
                         field = i.strip().lstrip('field=')
                         field_name, field_value = field.split('value=')
                         if 'inline=' in field_value:
-                            field_value, field_inline = field_value.split('inline=')
+                            field_value, field_inline = field_value.split(
+                                'inline=')
                             if 'false' in field_inline.lower() or 'no' in field_inline.lower():
                                 field_inline = False
                         field_name = field_name.strip().lstrip('name=')
-                        em.add_field(name=field_name, value=field_value.strip(), inline=field_inline)
+                        em.add_field(
+                            name=field_name, value=field_value.strip(), inline=field_inline)
                 if author:
                     if 'icon=' in author:
                         text, icon = author.split('icon=')
                         if 'url=' in icon:
-                            em.set_author(name=text.strip()[5:], icon_url=icon.split('url=')[0].strip(), url=icon.split('url=')[1].strip())
+                            em.set_author(name=text.strip()[5:], icon_url=icon.split(
+                                'url=')[0].strip(), url=icon.split('url=')[1].strip())
                         else:
                             em.set_author(name=text.strip()[5:], icon_url=icon)
                     else:
                         if 'url=' in author:
-                            em.set_author(name=author.split('url=')[0].strip()[5:], url=author.split('url=')[1].strip())
+                            em.set_author(name=author.split('url=')[0].strip()[
+                                          5:], url=author.split('url=')[1].strip())
                         else:
                             em.set_author(name=author)
 
@@ -274,11 +303,13 @@ class Misc(commands.Cog):
                 result.append(author)
             if fields:
                 for field in fields:
-                    result.append("field=name={} value={} inline={}".format(field.name, field.value, field.inline))
+                    result.append("field=name={} value={} inline={}".format(
+                        field.name, field.value, field.inline))
             if msg.content:
                 result.append("ptext={}".format(msg.content))
             await ctx.message.edit(content=" | ".join(result))
             info_msg = await ctx.send(self.bot.bot_prefix + "Embed has been turned back into its command form. Make your changes, then type `done` to finish editing.")
+
             def check(event_msg):
                 return event_msg.content == "done" and event_msg.author == self.bot.user
 
@@ -335,30 +366,36 @@ class Misc(commands.Cog):
                     color = '0x' + color
 
             if color:
-                em = discord.Embed(timestamp=timestamp, title=title, description=description, color=int(color, 16))
+                em = discord.Embed(timestamp=timestamp, title=title,
+                                   description=description, color=int(color, 16))
             else:
-                em = discord.Embed(timestamp=timestamp, title=title, description=description)
+                em = discord.Embed(timestamp=timestamp,
+                                   title=title, description=description)
             for i in embed_values:
                 if i.strip().lower().startswith('field='):
                     field_inline = True
                     field = i.strip().lstrip('field=')
                     field_name, field_value = field.split('value=')
                     if 'inline=' in field_value:
-                        field_value, field_inline = field_value.split('inline=')
+                        field_value, field_inline = field_value.split(
+                            'inline=')
                         if 'false' in field_inline.lower() or 'no' in field_inline.lower():
                             field_inline = False
                     field_name = field_name.strip().lstrip('name=')
-                    em.add_field(name=field_name, value=field_value.strip(), inline=field_inline)
+                    em.add_field(
+                        name=field_name, value=field_value.strip(), inline=field_inline)
             if author:
                 if 'icon=' in author:
                     text, icon = author.split('icon=')
                     if 'url=' in icon:
-                        em.set_author(name=text.strip()[5:], icon_url=icon.split('url=')[0].strip(), url=icon.split('url=')[1].strip())
+                        em.set_author(name=text.strip()[5:], icon_url=icon.split(
+                            'url=')[0].strip(), url=icon.split('url=')[1].strip())
                     else:
                         em.set_author(name=text.strip()[5:], icon_url=icon)
                 else:
                     if 'url=' in author:
-                        em.set_author(name=author.split('url=')[0].strip()[5:], url=author.split('url=')[1].strip())
+                        em.set_author(name=author.split('url=')[0].strip()[
+                                      5:], url=author.split('url=')[1].strip())
                     else:
                         em.set_author(name=author)
             if image:
@@ -464,7 +501,7 @@ class Misc(commands.Cog):
                                 return
                             if s.content.strip() == 'r' or s.content.strip() == 'random':
                                 await ctx.send(self.bot.bot_prefix + '{status} set. {status} will randomly change every ``{time}`` seconds'.format(
-                                                                status=message, time=reply.content.strip()))
+                                    status=message, time=reply.content.strip()))
                                 loop_type = 'random'
                             else:
                                 loop_type = 'ordered'
@@ -473,10 +510,11 @@ class Misc(commands.Cog):
 
                         if loop_type == 'ordered':
                             await ctx.send(self.bot.bot_prefix + '{status} set. {status} will change every ``{time}`` seconds'.format(
-                                                            status=message, time=reply.content.strip()))
+                                status=message, time=reply.content.strip()))
 
                         stream = 'yes' if is_stream else 'no'
-                        games = {'games': game.split(' | '), 'interval': interval, 'type': loop_type, 'stream': stream, 'status': self.bot.status_type}
+                        games = {'games': game.split(
+                            ' | '), 'interval': interval, 'type': loop_type, 'stream': stream, 'status': self.bot.status_type}
                         with open('settings/games.json', 'w') as g:
                             json.dump(games, g, indent=4)
 
@@ -490,7 +528,8 @@ class Misc(commands.Cog):
                 self.bot.game_interval = None
                 self.bot.game = game
                 stream = 'yes' if is_stream else 'no'
-                games = {'games': str(self.bot.game), 'interval': '0', 'type': 'none', 'stream': stream, 'status': self.bot.status_type}
+                games = {'games': str(self.bot.game), 'interval': '0', 'type': 'none',
+                         'stream': stream, 'status': self.bot.status_type}
                 with open('settings/games.json', 'w') as g:
                     json.dump(games, g, indent=4)
                 if is_stream and '=' in game:
@@ -520,7 +559,7 @@ class Misc(commands.Cog):
                 avi_config = json.load(a)
             if avi_config['password'] == '':
                 return await ctx.send(self.bot.bot_prefix + 'Cycling avatars requires you to input your password. Your password will not be sent anywhere and no one will have access to it. '
-                                                                'Enter your password with``>avatar password <password>`` Make sure you are in a private channel where no one can see!')
+                                      'Enter your password with``>avatar password <password>`` Make sure you are in a private channel where no one can see!')
             if avi_config['interval'] != '0':
                 self.bot.avatar = None
                 self.bot.avatar_interval = None
@@ -568,7 +607,8 @@ class Misc(commands.Cog):
                         json.dump(avi_config, avi, indent=4)
                     self.bot.avatar_interval = interval.content
                     self.bot.avatar_time = time.time()
-                    self.bot.avatar = random.choice(os.listdir('avatars')) if loop_type == "random" else sorted(os.listdir('avatars'))[0]
+                    self.bot.avatar = random.choice(os.listdir(
+                        'avatars')) if loop_type == "random" else sorted(os.listdir('avatars'))[0]
                     with open('avatars/%s' % self.bot.avatar, 'rb') as fp:
                         await self.bot.user.edit(password=avi_config['password'], avatar=fp.read())
 
@@ -630,7 +670,6 @@ class Misc(commands.Cog):
         else:
             await ctx.send(self.bot.bot_prefix + 'Could not find image.')
 
-
     @commands.command(pass_context=True)
     async def ping(self, ctx):
         """Get response time."""
@@ -641,7 +680,8 @@ class Misc(commands.Cog):
         if embed_perms(ctx.message):
             pong = discord.Embed(title='Pong! Response Time:', description=str(ping.microseconds / 1000.0) + ' ms',
                                  color=0x7A0000)
-            pong.set_thumbnail(url='http://odysseedupixel.fr/wp-content/gallery/pong/pong.jpg')
+            pong.set_thumbnail(
+                url='http://odysseedupixel.fr/wp-content/gallery/pong/pong.jpg')
             await ctx.send(content=None, embed=pong)
         else:
             await ctx.send(self.bot.bot_prefix + '``Response Time: %s ms``' % str(ping.microseconds / 1000.0))
@@ -683,7 +723,8 @@ class Misc(commands.Cog):
 
         await ctx.message.delete()
         result = None
-        channels = [ctx.channel] + [x for x in ctx.guild.channels if x != ctx.channel and type(x) == discord.channel.TextChannel]
+        channels = [ctx.channel] + [x for x in ctx.guild.channels if x !=
+                                    ctx.channel and type(x) == discord.channel.TextChannel]
 
         args = msg.split(" | ")
         msg = args[0]
@@ -743,7 +784,8 @@ class Misc(commands.Cog):
                     color = 0xbc0b0b
                 else:
                     color = int('0x' + color, 16)
-                em = discord.Embed(color=color, description=result.content, timestamp=result.created_at)
+                em = discord.Embed(
+                    color=color, description=result.content, timestamp=result.created_at)
                 em.set_author(name=sender, icon_url=result.author.avatar_url)
                 footer = ""
                 if result.channel != ctx.channel:
@@ -767,7 +809,8 @@ class Misc(commands.Cog):
         """Set your Discord status for when you aren't online. Ex: [p]afk idle"""
         with open('settings/optional_config.json', 'r+') as fp:
             opt = json.load(fp)
-            usage = parse_prefix(self.bot, 'Options: ``idle``, ``dnd``, ``offline``. When the status is set, the bot will set you to this by default when you are not on Discord. Ex: [c]afk idle')
+            usage = parse_prefix(
+                self.bot, 'Options: ``idle``, ``dnd``, ``offline``. When the status is set, the bot will set you to this by default when you are not on Discord. Ex: [c]afk idle')
             if txt:
                 if txt.strip() == 'idle':
                     opt['default_status'] = 'idle'
@@ -782,16 +825,17 @@ class Misc(commands.Cog):
                     return await ctx.send(self.bot.bot_prefix + 'Invalid status.\n' + usage)
             else:
                 if isinstance(ctx.message.author, discord.Member):
-                    info = 'Current status returned by Discord: `{}` | Current Default status: `{}`\n'.format(str(ctx.message.author.status).title(), opt['default_status'].title())
+                    info = 'Current status returned by Discord: `{}` | Current Default status: `{}`\n'.format(
+                        str(ctx.message.author.status).title(), opt['default_status'].title())
                 else:
-                    info = 'Current Default status: `{}`\n'.format(opt['default_status'].title())
+                    info = 'Current Default status: `{}`\n'.format(
+                        opt['default_status'].title())
                 return await ctx.send(self.bot.bot_prefix + info + usage)
             fp.seek(0)
             fp.truncate()
             json.dump(opt, fp, indent=4)
             await ctx.send(self.bot.bot_prefix + 'Set default afk status. You will now appear as ``{}`` when not on Discord.'.format(
-                                            opt['default_status']))
-
+                opt['default_status']))
 
     @commands.command(pass_context=True)
     async def stan(self, ctx, *, txt):
@@ -887,6 +931,7 @@ class Misc(commands.Cog):
         else:
             await ctx.message.delete()
             await ctx.send("That's not a valid action! Choose from `encode` or `decode`.")
+
 
 def setup(bot):
     bot.add_cog(Misc(bot))

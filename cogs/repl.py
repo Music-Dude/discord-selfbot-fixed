@@ -44,7 +44,8 @@ class EmbedShell(commands.Cog):
             icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb"
                      "/c/c3/Python-logo-notext.svg/1024px-Python-logo-notext.svg.png")
 
-        embed.set_footer(text="Based on RDanny's repl command by Danny. Embed shell by eye-sigil.")
+        embed.set_footer(
+            text="Based on RDanny's repl command by Danny. Embed shell by eye-sigil.")
         if name is not None:
             embed.title = name.strip(" ")
 
@@ -79,7 +80,7 @@ class EmbedShell(commands.Cog):
 
         while True:
             response = await self.bot.wait_for('message',
-                check=lambda m: m.content.startswith('>') and m.author == ctx.message.author and m.channel == ctx.message.channel)
+                                               check=lambda m: m.content.startswith('>') and m.author == ctx.message.author and m.channel == ctx.message.channel)
 
             cleaned = response.content.strip('> \n')
             shell = self.repl_sessions[session]
@@ -121,11 +122,11 @@ class EmbedShell(commands.Cog):
                 haste_url = await hastebin(str(history_string), self.bot.session)
 
                 self.repl_embeds[shell].add_field(
-                            name="`>>> {}`".format(cleaned),
-                            value="[Exited. History for latest session: "
-                                  "View on Hastebin.]({})".format(
-                                haste_url),
-                            inline=False)
+                    name="`>>> {}`".format(cleaned),
+                    value="[Exited. History for latest session: "
+                    "View on Hastebin.]({})".format(
+                        haste_url),
+                    inline=False)
 
                 try:
                     await self.repl_sessions[session].edit(embed=self.repl_embeds[shell])
@@ -251,7 +252,6 @@ class EmbedShell(commands.Cog):
                   pass_context=True)
     async def _repljump(self, ctx):
         """Brings the shell back down so you can see it again."""
-
         session = str(ctx.message.channel.id)
 
         if session not in self.repl_sessions:

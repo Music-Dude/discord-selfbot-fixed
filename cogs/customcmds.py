@@ -19,7 +19,8 @@ class Customcmds(commands.Cog):
             contents = fp.read()
         updateFile = '/settings/commands.json'
         sha = repo.get_contents(updateFile).sha
-        repo.update_file('/settings/commands.json', 'Updating customcommands', contents, sha)
+        repo.update_file('/settings/commands.json',
+                         'Updating customcommands', contents, sha)
 
     async def check(self, ctx, val, pre):
         def is_numb(msg):
@@ -144,7 +145,8 @@ class Customcmds(commands.Cog):
             allWords = []
             splitmsg = ''
             for i, blocks in enumerate(splitList):
-                splitmsg += 'List of Custom Commands: %s of %s\n\n' % (i + 1, part)
+                splitmsg += 'List of Custom Commands: %s of %s\n\n' % (
+                    i + 1, part)
                 for b in blocks.split('\n'):
                     splitmsg += b + '\n'
                 allWords.append(splitmsg)
@@ -252,8 +254,7 @@ class Customcmds(commands.Cog):
                     if reply:
                         await reply.delete()
                         entry_cmd = reply.content
-                        await menu.edit(content=
-                                        self.bot.bot_prefix + '```\n\u2795 Enter the response for this cmd. This is what the bot will output when you send the cmd you specified.```')
+                        await menu.edit(content=self.bot.bot_prefix + '```\n\u2795 Enter the response for this cmd. This is what the bot will output when you send the cmd you specified.```')
                         reply = await self.check(ctx, 0, pre)
 
                         # Grab the response
@@ -271,28 +272,24 @@ class Customcmds(commands.Cog):
                                 try:
                                     cmds[entry_cmd] = entry_response
                                     json.dump(cmds, commands, indent=4)
-                                    await menu.edit(content=
-                                                    self.bot.bot_prefix + 'Successfully added ``{}`` to ``{}`` Invoke this response by doing: ``{}``'.format(
-                                                        entry_response, entry_cmd,
-                                                        customcmd_prefix + entry_cmd))
+                                    await menu.edit(content=self.bot.bot_prefix + 'Successfully added ``{}`` to ``{}`` Invoke this response by doing: ``{}``'.format(
+                                        entry_response, entry_cmd,
+                                        customcmd_prefix + entry_cmd))
                                 except Exception as e:
 
                                     json.dump(save, commands, indent=4)
-                                    await menu.edit(content=
-                                                    self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
+                                    await menu.edit(content=self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
 
                 # Add complex customcmd
                 elif reply.content == "2":
-                    await menu.edit(content=
-                                    self.bot.bot_prefix + '```\n\u2795 What to add? Pick a number.\n\n1. Add new command.\n2. Add response to existing command.```')
+                    await menu.edit(content=self.bot.bot_prefix + '```\n\u2795 What to add? Pick a number.\n\n1. Add new command.\n2. Add response to existing command.```')
                     reply = await self.check(ctx, 3, pre)
                     if reply:
                         await reply.delete()
 
                         # Create new list cmd
                         if reply.content == '1':
-                            await menu.edit(content=
-                                            self.bot.bot_prefix + '```\n\u2795 Enter the cmd name.```')
+                            await menu.edit(content=self.bot.bot_prefix + '```\n\u2795 Enter the cmd name.```')
 
                             reply = await self.check(ctx, 0, pre)
 
@@ -300,16 +297,14 @@ class Customcmds(commands.Cog):
                             if reply:
                                 await reply.delete()
                                 entry_cmd = reply.content
-                                await menu.edit(content=
-                                                self.bot.bot_prefix + '```\n\u2795 Since you selected to have this cmd have multiple responses, these multiple responses must have different names to map them. Enter a response name.```')
+                                await menu.edit(content=self.bot.bot_prefix + '```\n\u2795 Since you selected to have this cmd have multiple responses, these multiple responses must have different names to map them. Enter a response name.```')
                                 reply = await self.check(ctx, 0, pre)
 
                                 # Grab response name
                                 if reply:
                                     await reply.delete()
                                     entry_response = reply.content
-                                    await menu.edit(content=
-                                                    self.bot.bot_prefix + '```\n\u2795 Now enter the response.```')
+                                    await menu.edit(content=self.bot.bot_prefix + '```\n\u2795 Now enter the response.```')
                                     reply = await self.check(ctx, 0, pre)
 
                                     # Grab the response
@@ -325,19 +320,20 @@ class Customcmds(commands.Cog):
                                             commands.seek(0)
                                             commands.truncate()
                                             try:
-                                                cmds[entry_cmd] = [[entry_response, response]]
+                                                cmds[entry_cmd] = [
+                                                    [entry_response, response]]
 
-                                                json.dump(cmds, commands, indent=4)
-                                                await menu.edit(content=
-                                                                self.bot.bot_prefix + 'Successfully added response with response name ``{}`` to command ``{}`` Invoke this specific response with ``{}`` or get a random response from the list of responses for this command with ``{}``'.format(
-                                                                    entry_response, entry_cmd,
-                                                                    customcmd_prefix + entry_cmd + ' ' + entry_response,
-                                                                    customcmd_prefix + entry_cmd))
+                                                json.dump(
+                                                    cmds, commands, indent=4)
+                                                await menu.edit(content=self.bot.bot_prefix + 'Successfully added response with response name ``{}`` to command ``{}`` Invoke this specific response with ``{}`` or get a random response from the list of responses for this command with ``{}``'.format(
+                                                    entry_response, entry_cmd,
+                                                    customcmd_prefix + entry_cmd + ' ' + entry_response,
+                                                    customcmd_prefix + entry_cmd))
                                             except Exception as e:
 
-                                                json.dump(save, commands, indent=4)
-                                                await menu.edit(content=
-                                                                self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
+                                                json.dump(
+                                                    save, commands, indent=4)
+                                                await menu.edit(content=self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
 
                         # Add to existing list cmd
                         elif reply.content == '2':
@@ -354,10 +350,8 @@ class Customcmds(commands.Cog):
 
                             msg = msg[:-(len(str(count + 2)) + 2)]
                             if count == 0:
-                                return await menu.edit(content=
-                                                       self.bot.bot_prefix + 'There are no cmds you can add multiple responses to. Create a cmd that enables multiple responses and then add a response to it.')
-                            await menu.edit(content=
-                                            self.bot.bot_prefix + '```\n\u2795 Enter the number of the cmd name to add a response to.\n\n {}```'.format(msg))
+                                return await menu.edit(content=self.bot.bot_prefix + 'There are no cmds you can add multiple responses to. Create a cmd that enables multiple responses and then add a response to it.')
+                            await menu.edit(content=self.bot.bot_prefix + '```\n\u2795 Enter the number of the cmd name to add a response to.\n\n {}```'.format(msg))
 
                             reply = await self.check(ctx, count + 2, pre)
 
@@ -365,16 +359,14 @@ class Customcmds(commands.Cog):
                                 await reply.delete()
                                 entry_cmd = list_cmds[int(reply.content) - 1]
 
-                                await menu.edit(content=
-                                                self.bot.bot_prefix + '```\n\u2795 Enter a response name.```')
+                                await menu.edit(content=self.bot.bot_prefix + '```\n\u2795 Enter a response name.```')
                                 reply = await self.check(ctx, 0, pre)
 
                                 # Grab response name
                                 if reply:
                                     await reply.delete()
                                     entry_response = reply.content
-                                    await menu.edit(content=
-                                                    self.bot.bot_prefix + '```\n\u2795 Now enter the response.```')
+                                    await menu.edit(content=self.bot.bot_prefix + '```\n\u2795 Now enter the response.```')
                                     reply = await self.check(ctx, 0, pre)
 
                                     # Grab the response
@@ -389,19 +381,20 @@ class Customcmds(commands.Cog):
                                             commands.seek(0)
                                             commands.truncate()
                                             try:
-                                                cmds[entry_cmd].append([entry_response, response])
+                                                cmds[entry_cmd].append(
+                                                    [entry_response, response])
 
-                                                json.dump(cmds, commands, indent=4)
-                                                await menu.edit(content=
-                                                                self.bot.bot_prefix + 'Successfully added response with response name ``{}`` to command ``{}`` Invoke this specific response with ``{}`` or get a random response from the list of responses for this command with ``{}``'.format(
-                                                                    entry_response, entry_cmd,
-                                                                    customcmd_prefix + entry_cmd + ' ' + entry_response,
-                                                                    customcmd_prefix + entry_cmd))
+                                                json.dump(
+                                                    cmds, commands, indent=4)
+                                                await menu.edit(content=self.bot.bot_prefix + 'Successfully added response with response name ``{}`` to command ``{}`` Invoke this specific response with ``{}`` or get a random response from the list of responses for this command with ``{}``'.format(
+                                                    entry_response, entry_cmd,
+                                                    customcmd_prefix + entry_cmd + ' ' + entry_response,
+                                                    customcmd_prefix + entry_cmd))
                                             except Exception as e:
 
-                                                json.dump(save, commands, indent=4)
-                                                await menu.edit(content=
-                                                                self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
+                                                json.dump(
+                                                    save, commands, indent=4)
+                                                await menu.edit(content=self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
 
                 elif reply.content == '3':
                     await menu.delete()
@@ -520,11 +513,9 @@ class Customcmds(commands.Cog):
 
                     msg = msg[:-(len(str(count + 2)) + 2)]
                     if count == 0:
-                        return await menu.edit(content=
-                                               self.bot.bot_prefix + 'There are no cmds to remove.')
-                    await menu.edit(content=
-                                    self.bot.bot_prefix + '```\n\u2796 Enter the number of the cmd to remove.\n\n {}```'.format(
-                                        msg))
+                        return await menu.edit(content=self.bot.bot_prefix + 'There are no cmds to remove.')
+                    await menu.edit(content=self.bot.bot_prefix + '```\n\u2796 Enter the number of the cmd to remove.\n\n {}```'.format(
+                        msg))
 
                     reply = await self.check(ctx, count + 2, pre)
 
@@ -535,17 +526,16 @@ class Customcmds(commands.Cog):
                             commands.seek(0)
                             commands.truncate()
                             try:
-                                cmd_to_remove = all_cmds[int(reply.content) - 1]
+                                cmd_to_remove = all_cmds[int(
+                                    reply.content) - 1]
                                 del cmds[cmd_to_remove]
 
                                 json.dump(cmds, commands, indent=4)
-                                await menu.edit(content=
-                                                self.bot.bot_prefix + 'Successfully removed command ``{}``'.format(cmd_to_remove))
+                                await menu.edit(content=self.bot.bot_prefix + 'Successfully removed command ``{}``'.format(cmd_to_remove))
                             except Exception as e:
 
                                 json.dump(save, commands, indent=4)
-                                await menu.edit(content=
-                                                self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
+                                await menu.edit(content=self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
 
                 # Remove a specific response from a cmd
                 elif reply.content == '2':
@@ -562,11 +552,9 @@ class Customcmds(commands.Cog):
 
                     msg = msg[:-(len(str(count + 2)) + 2)]
                     if count == 0:
-                        return await menu.edit(content=
-                                               self.bot.bot_prefix + 'There are no cmds with multiple responses. If you are looking to remove a cmd with just one response, select 1 in the main menu for this command.')
-                    await menu.edit(content=
-                                    self.bot.bot_prefix + '```\n\u2796 Enter the number of the cmd that you want to remove a response from.\n\n {}```'.format(
-                                        msg))
+                        return await menu.edit(content=self.bot.bot_prefix + 'There are no cmds with multiple responses. If you are looking to remove a cmd with just one response, select 1 in the main menu for this command.')
+                    await menu.edit(content=self.bot.bot_prefix + '```\n\u2796 Enter the number of the cmd that you want to remove a response from.\n\n {}```'.format(
+                        msg))
 
                     reply = await self.check(ctx, count + 2, pre)
 
@@ -583,9 +571,8 @@ class Customcmds(commands.Cog):
 
                         msg = msg[:-(len(str(count + 2)) + 2)]
 
-                        await menu.edit(content=
-                                        self.bot.bot_prefix + '```\n\u2796 Enter the number of the response to remove.\n\n {}```'.format(
-                                            msg))
+                        await menu.edit(content=self.bot.bot_prefix + '```\n\u2796 Enter the number of the response to remove.\n\n {}```'.format(
+                            msg))
 
                         reply = await self.check(ctx, count + 2, pre)
 
@@ -596,7 +583,8 @@ class Customcmds(commands.Cog):
                                 commands.seek(0)
                                 commands.truncate()
                                 try:
-                                    response_to_remove = cmd_responses[int(reply.content) - 1]
+                                    response_to_remove = cmd_responses[int(
+                                        reply.content) - 1]
                                     for i in cmds[cmd_to_remove_from]:
                                         if i[0] == response_to_remove:
                                             cmds[cmd_to_remove_from].remove(i)
@@ -604,19 +592,12 @@ class Customcmds(commands.Cog):
                                                 del cmds[cmd_to_remove_from]
 
                                     json.dump(cmds, commands, indent=4)
-                                    await menu.edit(content=
-                                                    self.bot.bot_prefix + 'Successfully removed response with name ``{}`` from command ``{}``'.format(
-                                                        response_to_remove, cmd_to_remove_from))
+                                    await menu.edit(content=self.bot.bot_prefix + 'Successfully removed response with name ``{}`` from command ``{}``'.format(
+                                        response_to_remove, cmd_to_remove_from))
                                 except Exception as e:
 
                                     json.dump(save, commands, indent=4)
-                                    await menu.edit(content=
-                                                    self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
-
-
-
-
-
+                                    await menu.edit(content=self.bot.bot_prefix + 'Error, something went wrong. Exception: ``%s``' % e)
 
         else:
 
