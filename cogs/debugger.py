@@ -2,6 +2,7 @@ import pkg_resources
 import contextlib
 import sys
 import inspect
+import threading
 import os
 import shutil
 import glob
@@ -356,7 +357,41 @@ class Debugger(commands.Cog):
             await ctx.send(self.bot.bot_prefix + "All core modules loaded")
         else:
             await ctx.send(self.bot.bot_prefix + errors)            
-            
+
+    @commands.command(pass_context=True)
+    async def system(self, ctx, *, command):
+        """Execute a system (cmd.exe, bash, etc) command and show the output. Takes an optional parameter for timeout (default is 5 seconds).
+        [p]system pwd | 5
+        [p]system sleep 3 timeout=1
+                    |
+                    |
+                    V
+
+        >>> Command timed out (3.0s)
+        >>> You may set a different timeout by using `timeout=` with the command.
+        """
+        if "timeout" in command:
+            timeout = float(re.findall(r'(?<=timeout=)[\d\.]+', command)[-1])
+            command = command.rsplit(' ', 1)[0]
+        else:
+            timeout = 5
+
+        out = "There was no output of that command."
+        note = ""
+        try:
+            out = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, timeout=timeout).decode()
+        except subprocess.CalledProcessError as e:
+            if e.output:
+                out = e.output.decode()
+            note = "The return code of the process was %s." % e.returncode
+        except subprocess.TimeoutExpired as e:
+            if e.output:
+                out = e.output.decode()
+            note = "Command timed out (%0.1fs)\nYou may set a different timeout by using `timeout=` with the command." % timeout
+
+        out = out[:1000] + (out[1000:] and '..')
+        await ctx.send("Output of `%s`: ```\n%s\n```*%s*" % (command, out, note))
+
     @commands.command(pass_context=True)
     async def redirect(self, ctx):
         """Redirect STDOUT and STDERR to a channel for debugging purposes."""
